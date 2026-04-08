@@ -4,8 +4,6 @@ import 'controller/customer_controller.dart';
 import '/core/constants/app_colors.dart';
 import '/core/widgets/common_text_field.dart';
 
-import 'package:p_v_j/features/vendor/dashboard/presentation/widgets/setup_progress_widget.dart';
-
 class CustomersScreen extends StatelessWidget {
   CustomersScreen({super.key});
 
@@ -16,7 +14,6 @@ class CustomersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SetupProgressWidget(),
         Expanded(
           child: Obx(() {
             if (controller.customers.isEmpty) {

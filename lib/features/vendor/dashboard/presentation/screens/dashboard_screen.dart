@@ -11,6 +11,7 @@ import '../../../leaves/presentation/screens/leaves_screen.dart';
 import '../../../subscriptions/presentation/screens/subscriptions_screen.dart';
 import 'admin_requests_screen.dart';
 import 'vendor_profile_screen.dart';
+import '../widgets/setup_progress_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
@@ -138,15 +139,24 @@ class DashboardScreen extends StatelessWidget {
               ],
             ),
           ),
-          body: IndexedStack(
-            index: controller.currentIndex.value,
+          body: Column(
             children: [
-              ProductsScreen(), // Index 0
-              CustomersScreen(), // Index 1
-              SubscriptionsScreen(), // Index 2
-              DailyEntryScreen(), // Index 3
-              BillingScreen(), // Index 4
-              LeavesScreen(), // Index 5
+              // Show setup guide only for the first 3 (setup-related) tabs
+              if (controller.currentIndex.value < 3)
+                const SetupProgressWidget(),
+              Expanded(
+                child: IndexedStack(
+                  index: controller.currentIndex.value,
+                  children: [
+                    ProductsScreen(), // Index 0
+                    CustomersScreen(), // Index 1
+                    SubscriptionsScreen(), // Index 2
+                    DailyEntryScreen(), // Index 3
+                    BillingScreen(), // Index 4
+                    LeavesScreen(), // Index 5
+                  ],
+                ),
+              ),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(

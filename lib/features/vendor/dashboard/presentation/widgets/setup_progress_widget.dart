@@ -13,50 +13,97 @@ class SetupProgressWidget extends StatelessWidget {
     return Obx(() {
       if (controller.isSetupComplete) return const SizedBox.shrink();
 
+      final completedSteps = _getCompletedSteps(controller);
+      final progress = completedSteps / 3.0;
+      final nextAction = _getNextAction(controller);
+
       return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.85)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 15, offset: const Offset(0, 5))
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            )
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Getting Started', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
-                    Text('Complete these steps to start billing', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Setup in Progress',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        nextAction['hint']!,
+                        style: const TextStyle(
+                            color: Colors.white70, fontSize: 11),
+                      ),
+                    ],
+                  ),
                 ),
-                Text('${_getCompletedSteps(controller)}/3', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                Text(
+                  '${(progress * 100).toInt()}%',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
               ],
             ),
-            const SizedBox(height: 20),
-            _buildStep(
-              0, 'Add your first Product', 
-              controller.totalProducts.value > 0, 
-              Icons.inventory_2_outlined,
-              () => controller.changePage(0)
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Colors.white24,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                minHeight: 6,
+              ),
             ),
-            _buildStep(
-              1, 'Create a Customer', 
-              controller.totalCustomers.value > 0, 
-              Icons.people_outline,
-              () => controller.changePage(1)
-            ),
-            _buildStep(
-              2, 'Set up a Subscription', 
-              controller.totalSubscriptions.value > 0, 
-              Icons.sync_alt,
-              () => controller.changePage(2)
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: nextAction['onTap'] as VoidCallback,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(nextAction['icon'] as IconData,
+                        size: 16, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      nextAction['action']!,
+                      style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -72,35 +119,28 @@ class SetupProgressWidget extends StatelessWidget {
     return count;
   }
 
-  Widget _buildStep(int index, String title, bool isDone, IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: isDone ? AppColors.success.withValues(alpha: 0.1) : AppColors.surfaceOffWhite,
-              child: Icon(isDone ? Icons.check : icon, size: 18, color: isDone ? AppColors.success : AppColors.textHint),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title, 
-                style: TextStyle(
-                  fontSize: 14, 
-                  fontWeight: isDone ? FontWeight.normal : FontWeight.bold,
-                  color: isDone ? AppColors.textHint : AppColors.textMain,
-                  decoration: isDone ? TextDecoration.lineThrough : null,
-                )
-              ),
-            ),
-            if (!isDone) 
-              const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.primary),
-          ],
-        ),
-      ),
-    );
+  Map<String, dynamic> _getNextAction(DashboardController controller) {
+    if (controller.totalProducts.value == 0) {
+      return {
+        'hint': 'Add your products to begin.',
+        'action': 'Add My First Product',
+        'icon': Icons.inventory_2_outlined,
+        'onTap': () => controller.changePage(0),
+      };
+    } else if (controller.totalCustomers.value == 0) {
+      return {
+        'hint': 'Great! Now register your customers.',
+        'action': 'Create First Customer',
+        'icon': Icons.people_outline,
+        'onTap': () => controller.changePage(1),
+      };
+    } else {
+      return {
+        'hint': 'Final step: Set up their subscriptions.',
+        'action': 'Setup Subscriptions',
+        'icon': Icons.sync_alt,
+        'onTap': () => controller.changePage(2),
+      };
+    }
   }
 }

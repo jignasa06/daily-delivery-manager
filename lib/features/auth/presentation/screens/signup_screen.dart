@@ -17,7 +17,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  String role = AppStrings.roleAdmin; // Default to Vendor
+  String? role; // No default role
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -26,13 +26,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
+      if (role == null) {
+        SnackbarUtils.showError("Please select your Account Type (Vendor or Customer)");
+        return;
+      }
       setState(() => _isLoading = true);
       final authService = Get.find<AuthService>();
       await authService.signUpWithEmail(
         emailController.text.trim(),
         passwordController.text.trim(),
         nameController.text.trim(),
-        role,
+        role!,
       );
       
       // AuthService._setInitialScreen will handle role-based redirection
@@ -125,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             _buildLabel(AppStrings.roleSelectorSignup),
                             const SizedBox(height: 12),
                             CommonRoleSelector(
-                              currentRole: role,
+                              currentRole: role ?? '',
                               onRoleChanged: (newRole) => setState(() => role = newRole),
                             ),
                             const SizedBox(height: 32),

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:p_v_j/core/utils/snackbar_utils.dart';
 import 'package:p_v_j/core/constants/app_strings.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -153,8 +154,13 @@ class AuthService extends GetxService {
         }, SetOptions(merge: true));
       }
       
-      await fetchUserRole(userCredential.user!.uid);
+      // Direct State Update: Set local state variables immediately to avoid race conditions with Firestore propagation
+      currentUserRole.value = finalRole;
+      currentVendorId.value = vendorId ?? (finalRole == AppStrings.roleAdmin ? userCredential.user!.uid : '');
+      currentCustomerId.value = customerId ?? '';
       
+      debugPrint("AuthService: Manual set after Signup. Role: ${currentUserRole.value}, VendorID: ${currentVendorId.value}");
+
       _isRegistering = false;
       await _setInitialScreen(userCredential.user);
       

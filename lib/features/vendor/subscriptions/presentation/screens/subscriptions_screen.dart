@@ -5,8 +5,6 @@ import 'controller/subscription_controller.dart';
 import '/core/constants/app_colors.dart';
 import '/core/widgets/common_text_field.dart';
 
-import 'package:p_v_j/features/vendor/dashboard/presentation/widgets/setup_progress_widget.dart';
-
 class SubscriptionsScreen extends StatelessWidget {
   SubscriptionsScreen({super.key});
 
@@ -16,7 +14,6 @@ class SubscriptionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SetupProgressWidget(),
         Expanded(
           child: Obx(() {
             if (controller.subscriptions.isEmpty) {
