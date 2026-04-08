@@ -1,50 +1,68 @@
+import 'package:get/get.dart';
+
 class AppStrings {
   // Auth Headers
-  static const String loginHeader = "Welcome Back";
-  static const String loginSubheader = "Sign in to access your portal";
-  static const String signupHeader = "Create Account";
-  static const String signupSubheader = "Join the community today";
+  static String get loginHeader => 'loginHeader'.tr;
+  static String get loginSubheader => 'loginSubheader'.tr;
+  static String get signupHeader => 'signupHeader'.tr;
+  static String get signupSubheader => 'signupSubheader'.tr;
 
   // Auth Labels
-  static const String fullNameLabel = "Full Name";
-  static const String fullNameHint = "John Doe";
-  static const String emailLabel = "Email Address";
-  static const String emailHint = "hello@example.com";
-  static const String passwordLabel = "Password";
-  static const String passwordHint = "Enter your password";
-  static const String createPasswordLabel = "Create Password";
-  static const String createPasswordHint = "Min. 6 characters";
+  static String get fullNameLabel => 'fullNameLabel'.tr;
+  static String get fullNameHint => 'fullNameHint'.tr;
+  static String get businessNameLabel => 'businessNameLabel'.tr;
+  static String get businessNameHint => 'businessNameHint'.tr;
+  static String get emailLabel => 'emailLabel'.tr;
+  static String get emailHint => 'emailHint'.tr;
+  static String get passwordLabel => 'passwordLabel'.tr;
+  static String get passwordHint => 'passwordHint'.tr;
+  static String get createPasswordLabel => 'createPasswordLabel'.tr;
+  static String get createPasswordHint => 'createPasswordHint'.tr;
   
   // Auth Form Errors
-  static const String requiredField = "Required";
-  static const String invalidEmail = "Invalid email format";
-  static const String passwordTooShort = "Must be at least 6 characters";
-  static const String fixErrors = "Please check your inputs and try again.";
+  static String get requiredField => 'requiredField'.tr;
+  static String get invalidEmail => 'invalidEmail'.tr;
+  static String get passwordTooShort => 'passwordTooShort'.tr;
+  static String get fixErrors => 'fixErrors'.tr;
 
   // Roles
-  static const String roleSelectorLogin = "Sign in as";
-  static const String roleSelectorSignup = "Account Type";
-  static const String roleUser = "Customer";
-  static const String roleAdmin = "Vendor";
+  static String get roleSelectorLogin => 'roleSelectorLogin'.tr;
+  static String get roleSelectorSignup => 'roleSelectorSignup'.tr;
+  static String get roleUser => 'roleUser'.tr;
+  static String get roleAdmin => 'roleAdmin'.tr;
 
   // Buttons & Links
-  static const String btnSignIn = "Sign In";
-  static const String btnRegister = "Register";
-  static const String noAccountText = "Don't have an account?";
-  static const String haveAccountText = "Already have an account?";
-  static const String linkSignUp = "Sign Up";
-  static const String linkSignIn = "Sign In";
+  static String get btnSignIn => 'btnSignIn'.tr;
+  static String get btnRegister => 'btnRegister'.tr;
+  static String get noAccountText => 'noAccountText'.tr;
+  static String get haveAccountText => 'haveAccountText'.tr;
+  static String get linkSignUp => 'linkSignUp'.tr;
+  static String get linkSignIn => 'linkSignIn'.tr;
 
   // Subscription Home
-  static const String subTrackerTitle = "Subscription Tracker";
-  static const String noSubData = "No subscriber data found";
-  static const String endDatePrefix = "End Date: ";
+  static String get subTrackerTitle => 'subTrackerTitle'.tr;
+  static String get noSubData => 'noSubData'.tr;
+  static String get endDatePrefix => 'endDatePrefix'.tr;
 
   // Add Subscription
-  static const String addSubTitle = "Add Subscriber";
-  static const String addSubBtnSave = "Save Subscription";
-  static const String labelName = "Name";
-  static const String labelUsername = "Username";
-  static const String labelStartDate = "Start Date";
-  static const String labelEndDate = "End Date";
+  static String get addSubTitle => 'addSubTitle'.tr;
+  static String get addSubBtnSave => 'addSubBtnSave'.tr;
+  static String get labelName => 'labelName'.tr;
+  static String get labelUsername => 'labelUsername'.tr;
+  static String get labelStartDate => 'labelStartDate'.tr;
+  static String get labelEndDate => 'labelEndDate'.tr;
+  
+  // New shared strings
+  static String get selectLanguage => 'selectLanguage'.tr;
+  static String get changeLanguage => 'changeLanguage'.tr;
+  static String get imVendor => 'imVendor'.tr;
+  static String get vendorDesc => 'vendorDesc'.tr;
+  static String get imCustomer => 'imCustomer'.tr;
+  static String get customerDesc => 'customerDesc'.tr;
+  static String get tellUsAboutYou => 'tellUsAboutYou'.tr;
+  static String get chooseAppUse => 'chooseAppUse'.tr;
+  static String get step1of2 => 'step1of2'.tr;
+  static String get logout => 'logout'.tr;
+  static String get logoutConfirm => 'logoutConfirm'.tr;
+  static String get cancel => 'cancel'.tr;
 }

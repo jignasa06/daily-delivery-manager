@@ -10,6 +10,8 @@ import 'package:p_v_j/features/customer/presentation/screens/customer_main_scree
 
 import 'core/config/app_config.dart';
 import 'core/theme/app_theme.dart';
+import 'core/localization/app_translations.dart';
+import 'core/localization/localization_service.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,6 +24,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
+      translations: AppTranslations(),
+      locale: Get.find<LocalizationService>().locale,
+      fallbackLocale: const Locale('en', 'US'),
       initialRoute: '/login',
       getPages: [
         GetPage(name: '/login', page: () => const LoginScreen()),

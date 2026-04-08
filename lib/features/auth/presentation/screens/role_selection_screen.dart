@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:p_v_j/core/constants/app_colors.dart';
 import 'package:p_v_j/core/constants/app_strings.dart';
+import 'package:p_v_j/core/localization/localization_service.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
@@ -53,10 +54,25 @@ class RoleSelectionScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new,
-                              size: 20, color: Colors.white),
-                          onPressed: () => Get.offAllNamed('/login'),
+                        GestureDetector(
+                          onTap: () => _showLanguageDialog(context),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.g_translate, size: 16, color: Colors.white),
+                                const SizedBox(width: 6),
+                                Text(
+                                  AppStrings.selectLanguage,
+                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -65,9 +81,9 @@ class RoleSelectionScreen extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'STEP 1 OF 2',
-                            style: TextStyle(
+                          child: Text(
+                            AppStrings.step1of2.toUpperCase(),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -85,9 +101,9 @@ class RoleSelectionScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 24),
-                          const Text(
-                            'Tell us about you',
-                            style: TextStyle(
+                          Text(
+                            AppStrings.tellUsAboutYou,
+                            style: const TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -96,7 +112,7 @@ class RoleSelectionScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Choose how you would like to use the app to customize your experience.',
+                            AppStrings.chooseAppUse,
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.white.withValues(alpha: 0.85),
@@ -105,22 +121,22 @@ class RoleSelectionScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 48),
                           _buildRoleCard(
-                            title: 'I\'m a Vendor',
-                            description:
-                                'Manage products, customers, and delivery billing with ease.',
+                            title: AppStrings.imVendor,
+                            description: AppStrings.vendorDesc,
                             icon: Icons.business_center_rounded,
                             role: AppStrings.roleAdmin,
                             accentColor: AppColors.primary,
                           ),
                           const SizedBox(height: 20),
                           _buildRoleCard(
-                            title: 'I\'m a Customer',
-                            description:
-                                'Track your deliveries and view monthly bills from your phone.',
+                            title: AppStrings.imCustomer,
+                            description: AppStrings.customerDesc,
                             icon: Icons.person_rounded,
                             role: AppStrings.roleUser,
-                            accentColor: const Color.fromARGB(
-                                255, 136, 41, 133), // Premium Coral accent
+                            // accentColor: const Color.fromARGB(
+                            //     255, 136, 41, 133),
+                            accentColor: AppColors.primary,
+                            // Premium Coral accent
                           ),
                           const Spacer(),
                           _buildFooter(),
@@ -213,7 +229,7 @@ class RoleSelectionScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Already have an account?',
+            AppStrings.haveAccountText,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.7),
               fontSize: 15,
@@ -230,9 +246,9 @@ class RoleSelectionScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
-              'Login',
-              style: TextStyle(
+            child: Text(
+              AppStrings.btnSignIn,
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
@@ -240,6 +256,48 @@ class RoleSelectionScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.selectLanguage,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textMain,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(LocalizationService.langs.length, (index) {
+              final lang = LocalizationService.langs[index];
+              return ListTile(
+                title: Text(lang),
+                onTap: () {
+                  Get.find<LocalizationService>().changeLocale(lang);
+                  Get.back();
+                },
+                trailing: Get.find<LocalizationService>().getCurrentLang() ==
+                        lang
+                    ? const Icon(Icons.check_circle, color: AppColors.primary)
+                    : null,
+              );
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

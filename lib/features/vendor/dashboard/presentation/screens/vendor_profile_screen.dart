@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:p_v_j/core/constants/app_colors.dart';
 import 'package:p_v_j/core/services/auth_service.dart';
 import 'package:p_v_j/core/utils/snackbar_utils.dart';
+import 'package:p_v_j/core/constants/app_strings.dart';
+import 'package:p_v_j/core/localization/localization_service.dart';
 import 'package:p_v_j/core/widgets/pvj_underline_tf.dart';
 
 class VendorProfileScreen extends StatefulWidget {
@@ -121,7 +123,6 @@ class _VendorProfileScreenState extends State<VendorProfileScreen> {
                       controller: emailController,
                       labelText: 'Support Email (Read Only)',
                     ),
-                    
                     const SizedBox(height: 48),
                     SizedBox(
                       width: double.infinity,
@@ -135,11 +136,71 @@ class _VendorProfileScreenState extends State<VendorProfileScreen> {
                         child: const Text('Save Business Profile', style: TextStyle(color: Colors.white, fontSize: 16)),
                       ),
                     ),
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 16),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.g_translate, color: AppColors.primary, size: 20),
+                      ),
+                      title: Text(AppStrings.changeLanguage, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text(Get.find<LocalizationService>().getCurrentLang()),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () => _showLanguageDialog(context),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.selectLanguage,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textMain,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(LocalizationService.langs.length, (index) {
+              final lang = LocalizationService.langs[index];
+              return ListTile(
+                title: Text(lang),
+                onTap: () {
+                  Get.find<LocalizationService>().changeLocale(lang);
+                  setState(() {});
+                  Get.back();
+                },
+                trailing: Get.find<LocalizationService>().getCurrentLang() == lang
+                    ? const Icon(Icons.check_circle, color: AppColors.primary)
+                    : null,
+              );
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 }
