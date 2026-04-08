@@ -59,14 +59,43 @@ class RoleSelectionScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: context.ph(1)),
-                            // Back Button
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: context.sp(20)),
-                              onPressed: () => Get.back(),
+                            // Header Row with Back Button and Language Switcher
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: context.sp(20)),
+                                  onPressed: () => Get.back(),
+                                ),
+                                GestureDetector(
+                                  onTap: () => _showLanguageDialog(context),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.g_translate, size: 14, color: Colors.white),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          AppStrings.selectLanguage,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: context.sp(10),
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: context.ph(5)),
+                            SizedBox(height: context.ph(4)),
                             Text(
                               AppStrings.tellUsAboutYou,
                               style: AppStyles.headerDisplay(context).copyWith(
@@ -167,20 +196,38 @@ class RoleSelectionScreen extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(
-                borderRadius: BorderRadius.circular(12),
+                      fontSize: context.sp(13),
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Text(
-              AppStrings.btnSignIn,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-          ),
-        ],
+            Icon(Icons.arrow_forward_ios,
+                color: AppColors.textHint, size: context.sp(16)),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildFooter(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          AppStrings.haveAccountText,
+          style: AppStyles.textLinkPlain(context),
+        ),
+        const SizedBox(width: 6),
+        GestureDetector(
+          onTap: () => Get.offAllNamed('/login'),
+          child: Text(
+            AppStrings.linkSignIn,
+            style: AppStyles.textLink(context),
+          ),
+        ),
+      ],
     );
   }
 

@@ -42,7 +42,7 @@ class HeadlineBodyOneBaseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title ?? '',
-      style: AppStyles.baseHeadline.copyWith(
+      style: AppStyles.baseHeadline(context).copyWith(
           letterSpacing: latterSpacing,
           fontSize: fontSize,
           fontWeight: fontWeight ?? FontWeight.w500,

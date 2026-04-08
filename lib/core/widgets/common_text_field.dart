@@ -42,10 +42,10 @@ class _CommonTextFieldState extends State<CommonTextField> {
       validator: widget.validator,
       keyboardType: widget.isNumber ? TextInputType.number : TextInputType.text,
       inputFormatters: widget.isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
-      style: AppStyles.inputText,
+      style: AppStyles.inputText(context),
       decoration: InputDecoration(
         hintText: widget.hint,
-        hintStyle: AppStyles.inputHint,
+        hintStyle: AppStyles.inputHint(context),
         prefixIcon: Icon(widget.icon, color: AppColors.textHint, size: 22),
         suffixIcon: widget.isPassword
             ? IconButton(

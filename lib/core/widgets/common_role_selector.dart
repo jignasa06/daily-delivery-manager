@@ -13,7 +13,7 @@ class CommonRoleSelector extends StatelessWidget {
     required this.onRoleChanged,
   });
 
-  Widget _roleChip(String title) {
+  Widget _roleChip(BuildContext context, String title) {
     bool isSelected = currentRole == title;
     return GestureDetector(
       onTap: () => onRoleChanged(title),
@@ -31,7 +31,7 @@ class CommonRoleSelector extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           title,
-          style: AppStyles.inputLabel.copyWith(
+          style: AppStyles.inputLabel(context).copyWith(
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected ? AppColors.primary : AppColors.textSecondary,
           ),
@@ -44,9 +44,9 @@ class CommonRoleSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _roleChip(AppStrings.roleUser)),
+        Expanded(child: _roleChip(context, AppStrings.roleUser)),
         const SizedBox(width: 16),
-        Expanded(child: _roleChip(AppStrings.roleAdmin)),
+        Expanded(child: _roleChip(context, AppStrings.roleAdmin)),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:p_v_j/core/utils/responsive_helper.dart';
 
 class PvjUnderlineTf extends StatelessWidget {
   const PvjUnderlineTf(
@@ -24,17 +25,21 @@ class PvjUnderlineTf extends StatelessWidget {
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
-      keyboardType: keyboardType,inputFormatters:inputFormatters,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: GoogleFonts.robotoMono(
           letterSpacing: 1,
+          fontSize: context.sp(14),
         ),
         errorStyle: GoogleFonts.robotoMono(
           letterSpacing: 1,
+          fontSize: context.sp(12),
         ),
         hintStyle: GoogleFonts.robotoMono(
           letterSpacing: 1,
+          fontSize: context.sp(14),
         ),
       ),
       validator: validator,

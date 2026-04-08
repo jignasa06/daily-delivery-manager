@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:p_v_j/core/constants/app_colors.dart';
+import 'package:p_v_j/core/utils/responsive_helper.dart';
 import '../screens/controller/dashboard_controller.dart';
 
 class SetupProgressWidget extends StatelessWidget {
@@ -43,27 +44,27 @@ class SetupProgressWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Setup in Progress',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: context.sp(14),
                             fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: context.ph(0.5)),
                       Text(
                         nextAction['hint']!,
-                        style: const TextStyle(
-                            color: Colors.white70, fontSize: 11),
+                        style: TextStyle(
+                            color: Colors.white70, fontSize: context.sp(11)),
                       ),
                     ],
                   ),
                 ),
                 Text(
                   '${(progress * 100).toInt()}%',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: context.sp(16),
                       fontWeight: FontWeight.bold),
                 ),
               ],
@@ -92,13 +93,13 @@ class SetupProgressWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(nextAction['icon'] as IconData,
-                        size: 16, color: AppColors.primary),
-                    const SizedBox(width: 8),
+                        size: context.sp(16), color: AppColors.primary),
+                    SizedBox(width: context.pw(2)),
                     Text(
                       nextAction['action']!,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.primary,
-                          fontSize: 13,
+                          fontSize: context.sp(13),
                           fontWeight: FontWeight.bold),
                     ),
                   ],
