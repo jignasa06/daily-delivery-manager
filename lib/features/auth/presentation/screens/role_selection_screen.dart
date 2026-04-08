@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_roles.dart';
 import '../../../../core/constants/app_styles.dart';
 import 'package:p_v_j/core/localization/localization_service.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
@@ -12,6 +13,7 @@ class RoleSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -20,13 +22,13 @@ class RoleSelectionScreen extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Decorative background elements for premium feel
+            // Decorative background elements
             Positioned(
-              top: -50,
-              right: -50,
+              top: -context.ph(5),
+              right: -context.pw(15),
               child: Container(
-                width: 250,
-                height: 250,
+                width: context.pw(65),
+                height: context.pw(65),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.1),
@@ -34,117 +36,75 @@ class RoleSelectionScreen extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 100,
-              left: -80,
+              bottom: context.ph(5),
+              left: -context.pw(20),
               child: Container(
-                width: 200,
-                height: 200,
+                width: context.pw(55),
+                height: context.pw(55),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
             ),
-
             SafeArea(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    onPressed: () => Get.back(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () => _showLanguageDialog(context),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.g_translate, size: 16, color: Colors.white),
-                                const SizedBox(width: 6),
-                                Text(
-                                  AppStrings.selectLanguage,
-                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            AppStrings.step1of2.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 24),
-                          Text(
-                            AppStrings.tellUsAboutYou,
-                            style: const TextStyle(
-                              fontSize: 34,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: -0.8,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: context.pw(7.5)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: context.ph(1)),
+                            // Back Button
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: context.sp(20)),
+                              onPressed: () => Get.back(),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            AppStrings.chooseAppUse,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.white.withValues(alpha: 0.85),
-                              height: 1.5,
+                            SizedBox(height: context.ph(5)),
+                            Text(
+                              AppStrings.tellUsAboutYou,
+                              style: AppStyles.headerDisplay(context).copyWith(
+                                fontSize: context.sp(32),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 48),
-                          _buildRoleCard(
-                            title: AppStrings.imVendor,
-                            description: AppStrings.vendorDesc,
-                            icon: Icons.storefront_rounded,
-                            role: AppRoles.admin,
-                            accentColor: AppColors.primary,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildRoleCard(
-                            title: AppStrings.imCustomer,
-                            description: AppStrings.customerDesc,
-                            icon: Icons.person_rounded,
-                            role: AppRoles.user,
-                            accentColor: AppColors.primary,
-                          ),
-                          const Spacer(),
-                          _buildFooter(),
-                          const SizedBox(height: 20),
-                        ],
+                            SizedBox(height: context.ph(1)),
+                            Text(
+                              AppStrings.chooseAppUse,
+                              style: TextStyle(
+                                fontSize: context.sp(15),
+                                color: Colors.white.withValues(alpha: 0.85),
+                                height: 1.5,
+                              ),
+                            ),
+                            SizedBox(height: context.ph(6)),
+                            _buildRoleCard(
+                              context: context,
+                              title: AppStrings.imVendor,
+                              description: AppStrings.vendorDesc,
+                              icon: Icons.storefront_rounded,
+                              role: AppRoles.admin,
+                              accentColor: AppColors.primary,
+                            ),
+                            SizedBox(height: context.ph(2)),
+                            _buildRoleCard(
+                              context: context,
+                              title: AppStrings.imCustomer,
+                              description: AppStrings.customerDesc,
+                              icon: Icons.person_rounded,
+                              role: AppRoles.user,
+                              accentColor: AppColors.primary,
+                            ),
+                            SizedBox(height: context.ph(4)),
+                            _buildFooter(context),
+                            SizedBox(height: context.ph(4)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -158,6 +118,7 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 
   Widget _buildRoleCard({
+    required BuildContext context,
     required String title,
     required String description,
     required IconData icon,
@@ -167,7 +128,7 @@ class RoleSelectionScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => Get.toNamed('/signup', arguments: {'role': role}),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(context.pw(6)),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(28),
@@ -182,70 +143,30 @@ class RoleSelectionScreen extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(context.pw(4)),
               decoration: BoxDecoration(
                 color: accentColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(icon, color: accentColor, size: 32),
+              child: Icon(icon, color: accentColor, size: context.sp(32)),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: context.pw(5)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: context.sp(18),
                       fontWeight: FontWeight.bold,
                       color: AppColors.textMain,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: context.ph(0.5)),
                   Text(
                     description,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary.withValues(alpha: 0.8),
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
-              color: AppColors.textHint,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            AppStrings.haveAccountText,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
-              fontSize: 15,
-              letterSpacing: 0.2,
-            ),
-          ),
-          const SizedBox(width: 4),
-          TextButton(
-            onPressed: () => Get.offAllNamed('/login'),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              backgroundColor: Colors.white.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),

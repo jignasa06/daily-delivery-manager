@@ -7,7 +7,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_styles.dart';
 import '../../../../core/localization/localization_service.dart';
-
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/widgets/common_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -82,20 +82,22 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent, // Background handled by container
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: AppColors.primaryGradient,
         ),
         child: Stack(
           children: [
-            // Decorative background elements for premium feel (Outside SafeArea to prevent clipping)
+            // Decorative background elements for premium feel
             Positioned(
-              top: -50,
-              right: -60,
+              top: -context.ph(5),
+              right: -context.pw(15),
               child: Container(
-                width: 250,
-                height: 250,
+                width: context.pw(65),
+                height: context.pw(65),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.1),
@@ -103,11 +105,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Positioned(
-              bottom: 50,
-              left: -80,
+              bottom: context.ph(5),
+              left: -context.pw(20),
               child: Container(
-                width: 220,
-                height: 220,
+                width: context.pw(55),
+                height: context.pw(55),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.05),
@@ -115,59 +117,58 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SafeArea(
-              child: Stack(
+              child: Column(
                 children: [
-                  Positioned(
-                    top: 10,
-                    right: 20,
-                    child: GestureDetector(
-                      onTap: () => _showLanguageDialog(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.g_translate,
-                                size: 14, color: Colors.white),
-                            const SizedBox(width: 4),
-                            Text(
-                              AppStrings.selectLanguage,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
+                  Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        padding: EdgeInsets.symmetric(horizontal: context.pw(6.5)),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: context.ph(2)),
+                            // Language Switcher (Moved inside scroll view to prevent overlap/squashing)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () => _showLanguageDialog(context),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.g_translate, size: 14, color: Colors.white),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        AppStrings.selectLanguage,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: context.sp(10),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: context.ph(8)),
                             Text(
                               AppStrings.loginHeader,
-                              style: AppStyles.headerDisplay,
+                              style: AppStyles.headerDisplay(context),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: context.ph(1)),
                             Text(
                               AppStrings.loginSubheader,
-                              style: AppStyles.subheader,
+                              style: AppStyles.subheader(context),
                             ),
-                            const SizedBox(height: 40),
+                            SizedBox(height: context.ph(5)),
                             Container(
-                              padding: const EdgeInsets.all(28),
+                              padding: EdgeInsets.all(context.pw(7)),
                               decoration: BoxDecoration(
                                 color: AppColors.backgroundWhite,
                                 borderRadius: BorderRadius.circular(30),
@@ -185,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _buildLabel(AppStrings.emailLabel),
-                                    const SizedBox(height: 8),
+                                    SizedBox(height: context.ph(1)),
                                     CommonTextField(
                                       controller: emailController,
                                       hint: AppStrings.emailHint,
@@ -195,9 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ? null
                                               : AppStrings.requiredField,
                                     ),
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: context.ph(2.5)),
                                     _buildLabel(AppStrings.passwordLabel),
-                                    const SizedBox(height: 8),
+                                    SizedBox(height: context.ph(1)),
                                     CommonTextField(
                                       controller: passwordController,
                                       hint: AppStrings.passwordHint,
@@ -208,27 +209,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ? null
                                               : AppStrings.requiredField,
                                     ),
-                                    const SizedBox(height: 8),
+                                    SizedBox(height: context.ph(0.5)),
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: TextButton(
                                         onPressed: _forgotPassword,
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: const Size(50, 30),
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
                                         child: Text(
                                           'forgotPassword'.tr,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               color: AppColors.primary,
+                                              fontSize: context.sp(13),
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 16),
+                                    SizedBox(height: context.ph(2)),
                                     _buildSubmitButton(),
                                   ],
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 30),
+                            SizedBox(height: context.ph(4)),
                             _buildFooter(),
+                            SizedBox(height: context.ph(4)),
                           ],
                         ),
                       ),
@@ -289,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLabel(String text) {
     return Text(
       text,
-      style: AppStyles.inputLabel,
+      style: AppStyles.inputLabel(context),
     );
   }
 
@@ -317,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: AppColors.backgroundWhite, strokeWidth: 2))
             : Text(
                 AppStrings.btnSignIn,
-                style: AppStyles.primaryButton.copyWith(
+                style: AppStyles.primaryButton(context).copyWith(
                   color: _isFormValid ? Colors.white : Colors.white.withValues(alpha: 0.6),
                 ),
               ),
@@ -331,14 +339,14 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           AppStrings.noAccountText,
-          style: AppStyles.textLinkPlain,
+          style: AppStyles.textLinkPlain(context),
         ),
         const SizedBox(width: 6),
         GestureDetector(
           onTap: () => Get.toNamed('/role-selection'),
           child: Text(
             AppStrings.linkSignUp,
-            style: AppStyles.textLink,
+            style: AppStyles.textLink(context),
           ),
         )
       ],

@@ -7,6 +7,7 @@ import 'tabs/customer_requests_tab.dart';
 import 'tabs/customer_billing_tab.dart';
 import 'package:p_v_j/core/constants/app_colors.dart';
 import 'package:p_v_j/core/services/auth_service.dart';
+import 'package:p_v_j/core/utils/responsive_helper.dart';
 
 class CustomerMainScreen extends StatefulWidget {
   const CustomerMainScreen({super.key});
@@ -70,7 +71,7 @@ class _CustomerMainScreenState extends State<CustomerMainScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _currentIndex == 0 ? AppBar(
-        title: const Text('My Portal', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('My Portal', style: TextStyle(color: Colors.white, fontSize: context.sp(18), fontWeight: FontWeight.bold)),
         backgroundColor: AppColors.primary,
         elevation: 0,
         actions: [

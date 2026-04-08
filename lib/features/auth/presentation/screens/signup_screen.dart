@@ -6,6 +6,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_roles.dart';
 import '../../../../core/constants/app_styles.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/widgets/common_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -86,20 +87,22 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: AppColors.primaryGradient,
         ),
         child: Stack(
           children: [
-            // Decorative background elements for premium feel (Outside SafeArea to prevent clipping)
+            // Decorative background elements
             Positioned(
-              top: -50,
-              right: -60,
+              top: -context.ph(5),
+              right: -context.pw(15),
               child: Container(
-                width: 250,
-                height: 250,
+                width: context.pw(65),
+                height: context.pw(65),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.1),
@@ -107,11 +110,11 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             Positioned(
-              bottom: 50,
-              left: -80,
+              bottom: context.ph(5),
+              left: -context.pw(20),
               child: Container(
-                width: 220,
-                height: 220,
+                width: context.pw(55),
+                height: context.pw(55),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withValues(alpha: 0.05),
@@ -121,121 +124,125 @@ class _SignupScreenState extends State<SignupScreen> {
             SafeArea(
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                      onPressed: () => Get.back(),
-                    ),
-                  ),
                   Expanded(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                AppStrings.signupHeader,
-                                style: AppStyles.headerDisplay,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: context.pw(6.5)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: context.ph(1)),
+                            // Back Button (Moved inside scroll view)
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: context.sp(18)),
+                              onPressed: () => Get.back(),
+                            ),
+                            SizedBox(height: context.ph(4)),
+                            Text(
+                              AppStrings.signupHeader,
+                              style: AppStyles.headerDisplay(context),
+                            ),
+                            SizedBox(height: context.ph(4)),
+                            Container(
+                              padding: EdgeInsets.all(context.pw(6)),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  )
+                                ],
                               ),
-                              const SizedBox(height: 32),
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.1),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
-                                    )
-                                  ],
-                                ),
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            role == AppRoles.admin ? 'sellerRegistration'.tr : 'customerRegistration'.tr,
+                                            style: TextStyle(
+                                                fontSize: context.sp(18), 
+                                                fontWeight: FontWeight.bold, 
+                                                color: AppColors.primary),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => Get.back(),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(20),
+                                              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                                            ),
                                             child: Text(
-                                              role == AppRoles.admin ? 'sellerRegistration'.tr : 'customerRegistration'.tr,
-                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () => Get.back(),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primary.withValues(alpha: 0.1),
-                                                borderRadius: BorderRadius.circular(20),
-                                                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
-                                              ),
-                                              child: Text(
-                                                'change'.tr,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.primary,
-                                                ),
+                                              'change'.tr,
+                                              style: TextStyle(
+                                                fontSize: context.sp(11),
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.primary,
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'signupFillDetails'.tr,
-                                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                                      ),
-                                      const SizedBox(height: 32),
-                                      CommonTextField(
-                                        controller: nameController,
-                                        hint: 'fullNameHint'.tr,
-                                        icon: Icons.person_outline,
-                                        validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
-                                      ),
-                                      if (role == AppStrings.roleAdmin) ...[
-                                        const SizedBox(height: 16),
-                                        CommonTextField(
-                                          controller: businessNameController,
-                                          hint: 'businessNameHint'.tr,
-                                          icon: Icons.business_outlined,
-                                          validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
                                         ),
                                       ],
-                                      const SizedBox(height: 16),
+                                    ),
+                                    SizedBox(height: context.ph(1)),
+                                    Text(
+                                      'signupFillDetails'.tr,
+                                      style: TextStyle(color: AppColors.textSecondary, fontSize: context.sp(12)),
+                                    ),
+                                    SizedBox(height: context.ph(3)),
+                                    CommonTextField(
+                                      controller: nameController,
+                                      hint: 'fullNameHint'.tr,
+                                      icon: Icons.person_outline,
+                                      validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
+                                    ),
+                                    if (role == AppRoles.admin) ...[
+                                      SizedBox(height: context.ph(2)),
                                       CommonTextField(
-                                        controller: emailController,
-                                        hint: AppStrings.emailHint,
-                                        icon: Icons.email_outlined,
-                                        validator: (val) => GetUtils.isEmail(val!) ? null : 'invalidEmail'.tr,
+                                        controller: businessNameController,
+                                        hint: 'businessNameHint'.tr,
+                                        icon: Icons.business_outlined,
+                                        validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
                                       ),
-                                      const SizedBox(height: 16),
-                                      CommonTextField(
-                                        controller: passwordController,
-                                        hint: AppStrings.createPasswordHint,
-                                        icon: Icons.lock_outline,
-                                        isPassword: true,
-                                        validator: (val) => val!.length >= 6 ? null : 'passwordTooShort'.tr,
-                                      ),
-                                      const SizedBox(height: 32),
-                                      _buildSubmitButton(),
                                     ],
-                                  ),
+                                    SizedBox(height: context.ph(2)),
+                                    CommonTextField(
+                                      controller: emailController,
+                                      hint: AppStrings.emailHint,
+                                      icon: Icons.email_outlined,
+                                      validator: (val) => GetUtils.isEmail(val!) ? null : 'invalidEmail'.tr,
+                                    ),
+                                    SizedBox(height: context.ph(2)),
+                                    CommonTextField(
+                                      controller: passwordController,
+                                      hint: AppStrings.createPasswordHint,
+                                      icon: Icons.lock_outline,
+                                      isPassword: true,
+                                      validator: (val) => val!.length >= 6 ? null : 'passwordTooShort'.tr,
+                                    ),
+                                    SizedBox(height: context.ph(3.5)),
+                                    _buildSubmitButton(),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 30),
-                              _buildFooter(),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: context.ph(4)),
+                            _buildFooter(),
+                            SizedBox(height: context.ph(4)),
+                          ],
                         ),
                       ),
                     ),
@@ -273,7 +280,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     color: AppColors.backgroundWhite, strokeWidth: 2))
             : Text(
                 AppStrings.btnRegister,
-                style: AppStyles.primaryButton.copyWith(
+                style: AppStyles.primaryButton(context).copyWith(
                   color: _isFormValid ? Colors.white : Colors.white.withValues(alpha: 0.6),
                 ),
               ),
@@ -287,14 +294,14 @@ class _SignupScreenState extends State<SignupScreen> {
       children: [
         Text(
           AppStrings.haveAccountText,
-          style: AppStyles.textLinkPlain,
+          style: AppStyles.textLinkPlain(context),
         ),
         const SizedBox(width: 6),
         GestureDetector(
           onTap: () => Get.offAllNamed('/login'),
           child: Text(
             AppStrings.linkSignIn,
-            style: AppStyles.textLink,
+            style: AppStyles.textLink(context),
           ),
         )
       ],

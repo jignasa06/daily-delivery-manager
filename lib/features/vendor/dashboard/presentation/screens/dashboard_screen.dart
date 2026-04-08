@@ -12,6 +12,7 @@ import '../../../subscriptions/presentation/screens/subscriptions_screen.dart';
 import 'admin_requests_screen.dart';
 import 'vendor_profile_screen.dart';
 import '../widgets/setup_progress_widget.dart';
+import '/core/utils/responsive_helper.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
@@ -51,8 +52,10 @@ class DashboardScreen extends StatelessWidget {
     return Obx(() => Scaffold(
           appBar: AppBar(
             title: Text(controller.appBarTitles[controller.currentIndex.value],
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Colors.white, 
+                    fontSize: context.sp(18),
+                    fontWeight: FontWeight.bold)),
             backgroundColor: AppColors.primary,
             elevation: 0,
             iconTheme: const IconThemeData(color: Colors.white),
@@ -78,9 +81,9 @@ class DashboardScreen extends StatelessWidget {
                             color: Colors.white, size: 36),
                         const SizedBox(height: 8),
                         Text(name,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: context.sp(16),
                                 fontWeight: FontWeight.bold)),
                         if (email.isNotEmpty)
                           Text(email,
