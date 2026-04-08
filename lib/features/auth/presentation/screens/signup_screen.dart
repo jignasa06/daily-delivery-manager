@@ -63,7 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
                   onPressed: () => Get.back(),
                 ),
               ),
@@ -108,10 +108,24 @@ class _SignupScreenState extends State<SignupScreen> {
                                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () => Get.back(),
-                                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(50, 30)),
-                                        child: const Text('Change', style: TextStyle(fontSize: 11, color: AppColors.textHint, decoration: TextDecoration.underline)),
+                                      GestureDetector(
+                                        onTap: () => Get.back(),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                                          ),
+                                          child: const Text(
+                                            'Change',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),

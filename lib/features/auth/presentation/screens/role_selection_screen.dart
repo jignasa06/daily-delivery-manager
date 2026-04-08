@@ -119,7 +119,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                 'Track your deliveries and view monthly bills from your phone.',
                             icon: Icons.person_rounded,
                             role: AppStrings.roleUser,
-                            accentColor: Colors.blueAccent,
+                            accentColor: const Color(0xFFFF7043), // Premium Coral accent
                           ),
                           const Spacer(),
                           _buildFooter(),
@@ -206,29 +206,40 @@ class RoleSelectionScreen extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Already have an account?',
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.7),
-            fontSize: 16,
-          ),
-        ),
-        TextButton(
-          onPressed: () => Get.offAllNamed('/login'),
-          child: const Text(
-            'Login',
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Already have an account?',
             style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              decoration: TextDecoration.underline,
+              color: Colors.white.withValues(alpha: 0.7),
+              fontSize: 15,
+              letterSpacing: 0.2,
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: 4),
+          TextButton(
+            onPressed: () => Get.offAllNamed('/login'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Login',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

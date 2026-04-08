@@ -75,6 +75,10 @@ class _VendorProfileScreenState extends State<VendorProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Get.back(),
+        ),
         title: const Text('Business Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: Colors.white),
