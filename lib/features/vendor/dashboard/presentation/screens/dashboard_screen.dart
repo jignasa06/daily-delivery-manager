@@ -54,6 +54,7 @@ class DashboardScreen extends StatelessWidget {
                     color: Colors.white, fontWeight: FontWeight.bold)),
             backgroundColor: AppColors.primary,
             elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
           ),
           drawer: Drawer(
             child: ListView(
