@@ -119,7 +119,8 @@ class RoleSelectionScreen extends StatelessWidget {
                                 'Track your deliveries and view monthly bills from your phone.',
                             icon: Icons.person_rounded,
                             role: AppStrings.roleUser,
-                            accentColor: const Color(0xFFFF7043), // Premium Coral accent
+                            accentColor: const Color.fromARGB(
+                                255, 136, 41, 133), // Premium Coral accent
                           ),
                           const Spacer(),
                           _buildFooter(),
