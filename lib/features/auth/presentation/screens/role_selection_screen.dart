@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:p_v_j/core/constants/app_colors.dart';
-import 'package:p_v_j/core/constants/app_strings.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_roles.dart';
+import '../../../../core/constants/app_styles.dart';
 import 'package:p_v_j/core/localization/localization_service.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
@@ -128,7 +130,7 @@ class RoleSelectionScreen extends StatelessWidget {
                             title: AppStrings.imVendor,
                             description: AppStrings.vendorDesc,
                             icon: Icons.storefront_rounded,
-                            role: AppStrings.roleAdmin,
+                            role: AppRoles.admin,
                             accentColor: AppColors.primary,
                           ),
                           const SizedBox(height: 20),
@@ -136,11 +138,8 @@ class RoleSelectionScreen extends StatelessWidget {
                             title: AppStrings.imCustomer,
                             description: AppStrings.customerDesc,
                             icon: Icons.person_rounded,
-                            role: AppStrings.roleUser,
-                            // accentColor: const Color.fromARGB(
-                            //     255, 136, 41, 133),
+                            role: AppRoles.user,
                             accentColor: AppColors.primary,
-                            // Premium Coral accent
                           ),
                           const Spacer(),
                           _buildFooter(),

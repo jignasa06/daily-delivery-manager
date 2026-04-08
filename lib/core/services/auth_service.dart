@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:p_v_j/core/utils/snackbar_utils.dart';
 import 'package:p_v_j/core/constants/app_strings.dart';
+import 'package:p_v_j/core/constants/app_roles.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthService extends GetxService {
@@ -43,7 +44,7 @@ class AuthService extends GetxService {
       } else {
         isLoggedIn.value = true;
         await fetchUserRole(user.uid);
-        if (currentUserRole.value == AppStrings.roleUser) {
+        if (currentUserRole.value == AppRoles.user) {
           Get.offAllNamed('/customer-home');
         } else {
           Get.offAllNamed('/home');
@@ -62,29 +63,44 @@ class AuthService extends GetxService {
       
       if (userDoc.exists && userDoc.data() != null) {
         final data = userDoc.data() as Map<String, dynamic>;
-        currentUserRole.value = data['role'] ?? AppStrings.roleUser;
+        String rawRole = data['role'] ?? AppRoles.user;
+        
+        // Normalize role for robustness (Legacy support for localized strings in DB)
+        if (AppRoles.isUser(rawRole)) {
+          currentUserRole.value = AppRoles.user;
+        } else if (AppRoles.isAdmin(rawRole)) {
+          currentUserRole.value = AppRoles.admin;
+        } else {
+          currentUserRole.value = AppRoles.user;
+        }
+
+        // If normalized role is different from DB, update DB for future-proofing
+        if (rawRole != currentUserRole.value) {
+          await _firestore.collection('users').doc(uid).update({'role': currentUserRole.value});
+        }
+
         currentVendorId.value = data['vendorId'] ?? '';
         currentCustomerId.value = data['customerId'] ?? '';
       } else {
         // Fallback for legacy users in the vendors collection
         DocumentSnapshot legacyDoc = await _firestore.collection('vendors').doc(uid).get();
         if (legacyDoc.exists) {
-          currentUserRole.value = AppStrings.roleAdmin;
+          currentUserRole.value = AppRoles.admin;
           currentVendorId.value = uid;
           currentCustomerId.value = '';
           
-          // Optionally migrate to users collection here
+          // Migrate to users collection with new role constant
           await _firestore.collection('users').doc(uid).set({
-            'role': AppStrings.roleAdmin,
+            'role': AppRoles.admin,
             'vendorId': uid,
             'email': legacyDoc.get('email'),
           }, SetOptions(merge: true));
         } else {
-          currentUserRole.value = AppStrings.roleUser;
+          currentUserRole.value = AppRoles.user;
         }
       }
     } catch (e) {
-      currentUserRole.value = AppStrings.roleUser;
+      currentUserRole.value = AppRoles.user;
     }
   }
 
@@ -126,7 +142,7 @@ class AuthService extends GetxService {
       if (inviteDoc.exists) {
         // FORCE role to Customer if they were invited as one
         final inviteData = inviteDoc.data() as Map<String, dynamic>;
-        finalRole = AppStrings.roleUser;
+        finalRole = AppRoles.user;
         vendorId = inviteData['vendorId'];
         customerId = inviteData['customerId'];
       }
@@ -146,13 +162,13 @@ class AuthService extends GetxService {
         'businessName': businessName ?? name,
         'email': email,
         'role': finalRole,
-        'vendorId': vendorId ?? (finalRole == AppStrings.roleAdmin ? userCredential.user!.uid : ''),
+        'vendorId': vendorId ?? (finalRole == AppRoles.admin ? userCredential.user!.uid : ''),
         'customerId': customerId ?? '',
         'createdAt': FieldValue.serverTimestamp(),
       });
       
       // 4. Legacy support: If vendor, also keep the vendor document
-      if (finalRole == AppStrings.roleAdmin) {
+      if (finalRole == AppRoles.admin) {
         await _firestore.collection('vendors').doc(userCredential.user!.uid).set({
           'businessName': businessName ?? name,
           'email': email,
@@ -163,7 +179,7 @@ class AuthService extends GetxService {
       
       // Direct State Update: Set local state variables immediately to avoid race conditions with Firestore propagation
       currentUserRole.value = finalRole;
-      currentVendorId.value = vendorId ?? (finalRole == AppStrings.roleAdmin ? userCredential.user!.uid : '');
+      currentVendorId.value = vendorId ?? (finalRole == AppRoles.admin ? userCredential.user!.uid : '');
       currentCustomerId.value = customerId ?? '';
       
       debugPrint("AuthService: Manual set after Signup. Role: ${currentUserRole.value}, VendorID: ${currentVendorId.value}");

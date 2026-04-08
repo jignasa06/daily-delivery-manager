@@ -4,6 +4,7 @@ import '../../../../core/services/auth_service.dart';
 import '../../../../core/utils/snackbar_utils.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_roles.dart';
 import '../../../../core/constants/app_styles.dart';
 import '../../../../core/widgets/common_text_field.dart';
 
@@ -26,8 +27,8 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    // Get role from arguments, fallback to Vendor if missing
-    role = Get.arguments?['role'] ?? AppStrings.roleAdmin;
+    // Get role from arguments, fallback to Vendor if missing (using internal code constant)
+    role = Get.arguments?['role'] ?? AppRoles.admin;
   }
 
   void _submit() async {
@@ -40,7 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
         password: passwordController.text.trim(),
         name: nameController.text.trim(),
         role: role,
-        businessName: role == AppStrings.roleAdmin
+        businessName: role == AppRoles.admin
             ? businessNameController.text.trim()
             : null,
       );
@@ -133,7 +134,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              role == AppStrings.roleAdmin ? 'sellerRegistration'.tr : 'customerRegistration'.tr,
+                                              role == AppRoles.admin ? 'sellerRegistration'.tr : 'customerRegistration'.tr,
                                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
                                             ),
                                           ),
