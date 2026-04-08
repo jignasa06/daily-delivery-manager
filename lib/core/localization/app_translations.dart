@@ -57,6 +57,10 @@ class AppTranslations extends Translations {
           'enterEmailFirst': 'Enter your email first',
           'passwordResetSent': 'Password reset email sent!',
           'failedSendReset': 'Failed to send reset email',
+          'sellerRegistration': 'Seller Registration',
+          'customerRegistration': 'Customer Registration',
+          'change': 'Change',
+          'signupFillDetails': 'Please fill in your details to create your account.',
         },
         'hi_IN': {
           'loginHeader': 'वापस स्वागत है',
@@ -112,6 +116,10 @@ class AppTranslations extends Translations {
           'enterEmailFirst': 'पहले अपना ईमेल दर्ज करें',
           'passwordResetSent': 'पासवर्ड रीसेट ईमेल भेज दिया गया है!',
           'failedSendReset': 'रीसेट ईमेल भेजने में विफल',
+          'sellerRegistration': 'विक्रेता पंजीकरण',
+          'customerRegistration': 'ग्राहक पंजीकरण',
+          'change': 'बदलें',
+          'signupFillDetails': 'अपना खाता बनाने के लिए कृपया अपना विवरण भरें।',
         },
         'gu_IN': {
           'loginHeader': 'ફરી સ્વાગત છે',
@@ -167,6 +175,10 @@ class AppTranslations extends Translations {
           'enterEmailFirst': 'પહેલા તમારું ઈમેલ દાખલ કરો',
           'passwordResetSent': 'પાસવર્ડ રીસેટ ઈમેલ મોકલવામાં આવ્યો છે!',
           'failedSendReset': 'રીસેટ ઇમેઇલ મોકલવામાં નિષ્ફળ',
+          'sellerRegistration': 'વિક્રેતા નોંધણી',
+          'customerRegistration': 'ગ્રાહક નોંધણી',
+          'change': 'બદલો',
+          'signupFillDetails': 'તમારું એકાઉન્ટ બનાવવા માટે કૃપા કરીને તમારી વિગતો ભરો.',
         },
         'mr_IN': {
           'loginHeader': 'परत स्वागत आहे',
@@ -222,6 +234,10 @@ class AppTranslations extends Translations {
           'enterEmailFirst': 'प्रथम तुमचा ईमेल प्रविष्ट करा',
           'passwordResetSent': 'पासवर्ड रीसेट ईमेल पाठवला आहे!',
           'failedSendReset': 'रीसेट ईमेल पाठवण्यात अपयश आले',
+          'sellerRegistration': 'विक्रेता नोंदणी',
+          'customerRegistration': 'ग्राहक नोंदणी',
+          'change': 'बदला',
+          'signupFillDetails': 'तुमचे खाते तयार करण्यासाठी कृपया तुमचा तपशील भरा.',
         },
       };
 }

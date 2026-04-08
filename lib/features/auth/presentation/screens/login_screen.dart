@@ -60,134 +60,165 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: AppColors.primaryGradient,
-      ),
-      child: SafeArea(
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient,
+        ),
         child: Stack(
           children: [
+            // Decorative background elements for premium feel (Outside SafeArea to prevent clipping)
             Positioned(
-              top: 10,
-              right: 20,
-              child: GestureDetector(
-                onTap: () => _showLanguageDialog(context),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.g_translate,
-                          size: 14, color: Colors.white),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppStrings.selectLanguage,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+              top: -50,
+              right: -60,
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             ),
-            Center(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppStrings.loginHeader,
-                        style: AppStyles.headerDisplay,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        AppStrings.loginSubheader,
-                        style: AppStyles.subheader,
-                      ),
-                      const SizedBox(height: 40),
-                      Container(
-                        padding: const EdgeInsets.all(28),
+            Positioned(
+              bottom: 50,
+              left: -80,
+              child: Container(
+                width: 220,
+                height: 220,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.05),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 10,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () => _showLanguageDialog(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundWhite,
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
+                          color: Colors.white.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.g_translate,
+                                size: 14, color: Colors.white),
+                            const SizedBox(width: 4),
+                            Text(
+                              AppStrings.selectLanguage,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildLabel(AppStrings.emailLabel),
-                              const SizedBox(height: 8),
-                              CommonTextField(
-                                controller: emailController,
-                                hint: AppStrings.emailHint,
-                                icon: Icons.email_outlined,
-                                validator: (val) =>
-                                    val != null && val.isNotEmpty
-                                        ? null
-                                        : AppStrings.requiredField,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildLabel(AppStrings.passwordLabel),
-                              const SizedBox(height: 8),
-                              CommonTextField(
-                                controller: passwordController,
-                                hint: AppStrings.passwordHint,
-                                icon: Icons.lock_outline,
-                                isPassword: true,
-                                validator: (val) =>
-                                    val != null && val.isNotEmpty
-                                        ? null
-                                        : AppStrings.requiredField,
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  onPressed: _forgotPassword,
-                                  child: Text(
-                                    'forgotPassword'.tr,
-                                    style: const TextStyle(
-                                        color: AppColors.primary,
-                                        fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.loginHeader,
+                              style: AppStyles.headerDisplay,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              AppStrings.loginSubheader,
+                              style: AppStyles.subheader,
+                            ),
+                            const SizedBox(height: 40),
+                            Container(
+                              padding: const EdgeInsets.all(28),
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundWhite,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
                                   ),
+                                ],
+                              ),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildLabel(AppStrings.emailLabel),
+                                    const SizedBox(height: 8),
+                                    CommonTextField(
+                                      controller: emailController,
+                                      hint: AppStrings.emailHint,
+                                      icon: Icons.email_outlined,
+                                      validator: (val) =>
+                                          val != null && val.isNotEmpty
+                                              ? null
+                                              : AppStrings.requiredField,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildLabel(AppStrings.passwordLabel),
+                                    const SizedBox(height: 8),
+                                    CommonTextField(
+                                      controller: passwordController,
+                                      hint: AppStrings.passwordHint,
+                                      icon: Icons.lock_outline,
+                                      isPassword: true,
+                                      validator: (val) =>
+                                          val != null && val.isNotEmpty
+                                              ? null
+                                              : AppStrings.requiredField,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: _forgotPassword,
+                                        child: Text(
+                                          'forgotPassword'.tr,
+                                          style: const TextStyle(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildSubmitButton(),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              _buildSubmitButton(),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 30),
+                            _buildFooter(),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      _buildFooter(),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 
   void _showLanguageDialog(BuildContext context) {

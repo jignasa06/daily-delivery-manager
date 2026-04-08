@@ -34,15 +34,17 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       final authService = Get.find<AuthService>();
-      
+
       await authService.signUpWithEmail(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
         name: nameController.text.trim(),
         role: role,
-        businessName: role == AppStrings.roleAdmin ? businessNameController.text.trim() : null,
+        businessName: role == AppStrings.roleAdmin
+            ? businessNameController.text.trim()
+            : null,
       );
-      
+
       if (mounted) setState(() => _isLoading = false);
     } else {
       SnackbarUtils.showError(AppStrings.fixErrors);
@@ -57,130 +59,159 @@ class _SignupScreenState extends State<SignupScreen> {
         decoration: const BoxDecoration(
           gradient: AppColors.primaryGradient,
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                  onPressed: () => Get.back(),
+        child: Stack(
+          children: [
+            // Decorative background elements for premium feel (Outside SafeArea to prevent clipping)
+            Positioned(
+              top: -50,
+              right: -60,
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppStrings.signupHeader,
-                            style: AppStyles.headerDisplay,
-                          ),
-                          const SizedBox(height: 32),
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                )
-                              ],
-                            ),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            Positioned(
+              bottom: 50,
+              left: -80,
+              child: Container(
+                width: 220,
+                height: 220,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.05),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                      onPressed: () => Get.back(),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppStrings.signupHeader,
+                                style: AppStyles.headerDisplay,
+                              ),
+                              const SizedBox(height: 32),
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.1),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    )
+                                  ],
+                                ),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Text(
-                                          role == AppStrings.roleAdmin ? 'Vendor Registration' : 'Customer Registration',
-                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => Get.back(),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
-                                          ),
-                                          child: const Text(
-                                            'Change',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primary,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              role == AppStrings.roleAdmin ? 'sellerRegistration'.tr : 'customerRegistration'.tr,
+                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
                                             ),
                                           ),
-                                        ),
+                                          GestureDetector(
+                                            onTap: () => Get.back(),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.primary.withValues(alpha: 0.1),
+                                                borderRadius: BorderRadius.circular(20),
+                                                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                                              ),
+                                              child: Text(
+                                                'change'.tr,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'signupFillDetails'.tr,
+                                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                                      ),
+                                      const SizedBox(height: 32),
+                                      CommonTextField(
+                                        controller: nameController,
+                                        hint: 'fullNameHint'.tr,
+                                        icon: Icons.person_outline,
+                                        validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
+                                      ),
+                                      if (role == AppStrings.roleAdmin) ...[
+                                        const SizedBox(height: 16),
+                                        CommonTextField(
+                                          controller: businessNameController,
+                                          hint: 'businessNameHint'.tr,
+                                          icon: Icons.business_outlined,
+                                          validator: (val) => val!.isEmpty ? 'requiredField'.tr : null,
+                                        ),
+                                      ],
+                                      const SizedBox(height: 16),
+                                      CommonTextField(
+                                        controller: emailController,
+                                        hint: AppStrings.emailHint,
+                                        icon: Icons.email_outlined,
+                                        validator: (val) => GetUtils.isEmail(val!) ? null : 'invalidEmail'.tr,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      CommonTextField(
+                                        controller: passwordController,
+                                        hint: AppStrings.createPasswordHint,
+                                        icon: Icons.lock_outline,
+                                        isPassword: true,
+                                        validator: (val) => val!.length >= 6 ? null : 'passwordTooShort'.tr,
+                                      ),
+                                      const SizedBox(height: 32),
+                                      _buildSubmitButton(),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    'Please fill in your details to create your account.',
-                                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                                  ),
-                                  const SizedBox(height: 32),
-                                  CommonTextField(
-                                    controller: nameController,
-                                    hint: 'Full Name',
-                                    icon: Icons.person_outline,
-                                    validator: (val) => val!.isEmpty ? 'Required' : null,
-                                  ),
-                                  if (role == AppStrings.roleAdmin) ...[
-                                    const SizedBox(height: 16),
-                                    CommonTextField(
-                                      controller: businessNameController,
-                                      hint: 'Business Name',
-                                      icon: Icons.business_outlined,
-                                      validator: (val) => val!.isEmpty ? 'Required' : null,
-                                    ),
-                                  ],
-                                  const SizedBox(height: 16),
-                                  CommonTextField(
-                                    controller: emailController,
-                                    hint: AppStrings.emailHint,
-                                    icon: Icons.email_outlined,
-                                    validator: (val) => GetUtils.isEmail(val!) ? null : 'Invalid Email',
-                                  ),
-                                  const SizedBox(height: 16),
-                                  CommonTextField(
-                                    controller: passwordController,
-                                    hint: AppStrings.createPasswordHint,
-                                    icon: Icons.lock_outline,
-                                    isPassword: true,
-                                    validator: (val) => val!.length >= 6 ? null : 'Min 6 chars',
-                                  ),
-                                  const SizedBox(height: 32),
-                                  _buildSubmitButton(),
-                                ],
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 30),
+                              _buildFooter(),
+                            ],
                           ),
-                          const SizedBox(height: 30),
-                          _buildFooter(),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -201,8 +232,10 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
         child: _isLoading
             ? const SizedBox(
-                width: 24, height: 24,
-                child: CircularProgressIndicator(color: AppColors.backgroundWhite, strokeWidth: 2))
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                    color: AppColors.backgroundWhite, strokeWidth: 2))
             : Text(
                 AppStrings.btnRegister,
                 style: AppStyles.primaryButton,

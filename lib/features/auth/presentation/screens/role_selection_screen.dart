@@ -123,7 +123,7 @@ class RoleSelectionScreen extends StatelessWidget {
                           _buildRoleCard(
                             title: AppStrings.imVendor,
                             description: AppStrings.vendorDesc,
-                            icon: Icons.business_center_rounded,
+                            icon: Icons.storefront_rounded,
                             role: AppStrings.roleAdmin,
                             accentColor: AppColors.primary,
                           ),
