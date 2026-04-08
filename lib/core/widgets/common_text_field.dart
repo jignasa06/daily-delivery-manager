@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_styles.dart';
 
-class CommonTextField extends StatelessWidget {
+class CommonTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
   final IconData icon;
@@ -22,21 +22,44 @@ class CommonTextField extends StatelessWidget {
   });
 
   @override
+  State<CommonTextField> createState() => _CommonTextFieldState();
+}
+
+class _CommonTextFieldState extends State<CommonTextField> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      validator: validator,
-      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-      inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
+      controller: widget.controller,
+      obscureText: _obscureText,
+      validator: widget.validator,
+      keyboardType: widget.isNumber ? TextInputType.number : TextInputType.text,
+      inputFormatters: widget.isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
       style: AppStyles.inputText,
       decoration: InputDecoration(
-        hintText: hint,
+        hintText: widget.hint,
         hintStyle: AppStyles.inputHint,
-        prefixIcon: Icon(icon, color: AppColors.textHint, size: 22),
+        prefixIcon: Icon(widget.icon, color: AppColors.textHint, size: 22),
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  color: AppColors.textHint,
+                  size: 20,
+                ),
+                onPressed: () => setState(() => _obscureText = !_obscureText),
+              )
+            : null,
         filled: true,
         fillColor: AppColors.surfaceOffWhite,
-        contentPadding: const EdgeInsets.symmetric(vertical: 18),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.surfaceLightGrey),

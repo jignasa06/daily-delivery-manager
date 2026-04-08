@@ -14,6 +14,8 @@ class AuthService extends GetxService {
   RxString currentVendorId = ''.obs;
   RxString currentCustomerId = ''.obs;
 
+  bool _isRegistering = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -25,6 +27,8 @@ class AuthService extends GetxService {
   }
 
   Future<void> _setInitialScreen(User? user) async {
+    if (_isRegistering) return;
+
     try {
       // Small delay ensures GetX router is ready for the first transition
       await Future.delayed(const Duration(milliseconds: 100));
@@ -102,16 +106,18 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<UserCredential?> signUpWithEmail(String email, String password, String name, [String role = AppStrings.roleAdmin]) async {
+  Future<UserCredential?> signUpWithEmail(String email, String password, String name, String role) async {
+    _isRegistering = true;
     try {
-      // 1. Check for an active invite first
+      // 1. Check for an active invite first (priority)
       DocumentSnapshot inviteDoc = await _firestore.collection('invites').doc(email).get();
       
-      String finalRole = role;
+      String finalRole = role; // Use user-selected role by default
       String? vendorId;
       String? customerId;
 
       if (inviteDoc.exists) {
+        // FORCE role to Customer if they were invited as one
         final inviteData = inviteDoc.data() as Map<String, dynamic>;
         finalRole = AppStrings.roleUser;
         vendorId = inviteData['vendorId'];
@@ -148,11 +154,17 @@ class AuthService extends GetxService {
       }
       
       await fetchUserRole(userCredential.user!.uid);
+      
+      _isRegistering = false;
+      await _setInitialScreen(userCredential.user);
+      
       return userCredential;
     } on FirebaseAuthException catch (e) {
+      _isRegistering = false;
       SnackbarUtils.showError(e.message ?? 'Registration Failed', title: 'Sign Up Error');
       return null;
     } catch (e) {
+      _isRegistering = false;
       SnackbarUtils.showError(e.toString(), title: 'Error');
       return null;
     }
