@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(width: 6),
         GestureDetector(
-          onTap: () => Get.offAllNamed('/signup'),
+          onTap: () => Get.toNamed('/role-selection'),
           child: Text(
             AppStrings.linkSignUp,
             style: AppStyles.textLink,

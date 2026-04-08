@@ -107,7 +107,13 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<UserCredential?> signUpWithEmail(String email, String password, String name, String role) async {
+  Future<UserCredential?> signUpWithEmail({
+    required String email, 
+    required String password, 
+    required String name, 
+    required String role,
+    String? businessName,
+  }) async {
     _isRegistering = true;
     try {
       // 1. Check for an active invite first (priority)
@@ -137,6 +143,7 @@ class AuthService extends GetxService {
       // 3. Save to global user registry
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': name,
+        'businessName': businessName ?? name,
         'email': email,
         'role': finalRole,
         'vendorId': vendorId ?? (finalRole == AppStrings.roleAdmin ? userCredential.user!.uid : ''),
@@ -147,7 +154,7 @@ class AuthService extends GetxService {
       // 4. Legacy support: If vendor, also keep the vendor document
       if (finalRole == AppStrings.roleAdmin) {
         await _firestore.collection('vendors').doc(userCredential.user!.uid).set({
-          'name': name,
+          'businessName': businessName ?? name,
           'email': email,
           'role': finalRole,
           'createdAt': FieldValue.serverTimestamp(),

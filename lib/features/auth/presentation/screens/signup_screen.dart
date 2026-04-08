@@ -5,9 +5,7 @@ import '../../../../core/utils/snackbar_utils.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_styles.dart';
-
 import '../../../../core/widgets/common_text_field.dart';
-import '../../../../core/widgets/common_role_selector.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,29 +15,34 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  String? role; // No default role
+  late String role;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final businessNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get role from arguments, fallback to Vendor if missing
+    role = Get.arguments?['role'] ?? AppStrings.roleAdmin;
+  }
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      if (role == null) {
-        SnackbarUtils.showError("Please select your Account Type (Vendor or Customer)");
-        return;
-      }
       setState(() => _isLoading = true);
       final authService = Get.find<AuthService>();
+      
       await authService.signUpWithEmail(
-        emailController.text.trim(),
-        passwordController.text.trim(),
-        nameController.text.trim(),
-        role!,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        name: nameController.text.trim(),
+        role: role,
+        businessName: role == AppStrings.roleAdmin ? businessNameController.text.trim() : null,
       );
       
-      // AuthService._setInitialScreen will handle role-based redirection
       if (mounted) setState(() => _isLoading = false);
     } else {
       SnackbarUtils.showError(AppStrings.fixErrors);
@@ -55,105 +58,117 @@ class _SignupScreenState extends State<SignupScreen> {
           gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppStrings.signupHeader,
-                      style: AppStyles.headerDisplay,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppStrings.signupSubheader,
-                      style: AppStyles.subheader,
-                    ),
-                    const SizedBox(height: 40),
-
-                    Container(
-                      padding: const EdgeInsets.all(28),
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundWhite,
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildLabel(AppStrings.fullNameLabel),
-                            const SizedBox(height: 8),
-                            CommonTextField(
-                              controller: nameController,
-                              hint: AppStrings.fullNameHint,
-                              icon: Icons.person_outline,
-                              validator: (val) => val == null || val.isEmpty ? AppStrings.requiredField : null,
-                            ),
-                            const SizedBox(height: 20),
-                            _buildLabel(AppStrings.emailLabel),
-                            const SizedBox(height: 8),
-                            CommonTextField(
-                              controller: emailController,
-                              hint: AppStrings.emailHint,
-                              icon: Icons.email_outlined,
-                              validator: (val) {
-                                if (val == null || val.isEmpty) return AppStrings.requiredField;
-                                if (!GetUtils.isEmail(val)) return AppStrings.invalidEmail;
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            _buildLabel(AppStrings.createPasswordLabel),
-                            const SizedBox(height: 8),
-                            CommonTextField(
-                              controller: passwordController,
-                              hint: AppStrings.createPasswordHint,
-                              icon: Icons.lock_outline,
-                              isPassword: true,
-                              validator: (val) => val != null && val.length >= 6
-                                  ? null
-                                  : AppStrings.passwordTooShort,
-                            ),
-                            const SizedBox(height: 24),
-                            _buildLabel(AppStrings.roleSelectorSignup),
-                            const SizedBox(height: 12),
-                            CommonRoleSelector(
-                              currentRole: role ?? '',
-                              onRoleChanged: (newRole) => setState(() => role = newRole),
-                            ),
-                            const SizedBox(height: 32),
-                            _buildSubmitButton(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    _buildFooter(),
-                  ],
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Get.back(),
                 ),
               ),
-            ),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            AppStrings.signupHeader,
+                            style: AppStyles.headerDisplay,
+                          ),
+                          const SizedBox(height: 32),
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                )
+                              ],
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          role == AppStrings.roleAdmin ? 'Vendor Registration' : 'Customer Registration',
+                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Get.back(),
+                                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(50, 30)),
+                                        child: const Text('Change', style: TextStyle(fontSize: 11, color: AppColors.textHint, decoration: TextDecoration.underline)),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Please fill in your details to create your account.',
+                                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                                  ),
+                                  const SizedBox(height: 32),
+                                  CommonTextField(
+                                    controller: nameController,
+                                    hint: 'Full Name',
+                                    icon: Icons.person_outline,
+                                    validator: (val) => val!.isEmpty ? 'Required' : null,
+                                  ),
+                                  if (role == AppStrings.roleAdmin) ...[
+                                    const SizedBox(height: 16),
+                                    CommonTextField(
+                                      controller: businessNameController,
+                                      hint: 'Business Name',
+                                      icon: Icons.business_outlined,
+                                      validator: (val) => val!.isEmpty ? 'Required' : null,
+                                    ),
+                                  ],
+                                  const SizedBox(height: 16),
+                                  CommonTextField(
+                                    controller: emailController,
+                                    hint: AppStrings.emailHint,
+                                    icon: Icons.email_outlined,
+                                    validator: (val) => GetUtils.isEmail(val!) ? null : 'Invalid Email',
+                                  ),
+                                  const SizedBox(height: 16),
+                                  CommonTextField(
+                                    controller: passwordController,
+                                    hint: AppStrings.createPasswordHint,
+                                    icon: Icons.lock_outline,
+                                    isPassword: true,
+                                    validator: (val) => val!.length >= 6 ? null : 'Min 6 chars',
+                                  ),
+                                  const SizedBox(height: 32),
+                                  _buildSubmitButton(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          _buildFooter(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: AppStyles.inputLabel,
     );
   }
 
