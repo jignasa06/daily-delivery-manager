@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '/core/services/auth_service.dart';
-import '../../../daily_entries/data/models/leave_model.dart';
+import '../models/leave_model.dart';
 import '../models/customer_leave_model.dart';
 import '/core/utils/snackbar_utils.dart';
 

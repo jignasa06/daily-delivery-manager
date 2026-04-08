@@ -6,7 +6,7 @@ import 'package:p_v_j/core/utils/snackbar_utils.dart';
 import 'package:p_v_j/features/vendor/customers/data/models/customer_model.dart';
 import 'package:p_v_j/features/vendor/customers/data/services/customer_service.dart';
 import 'package:p_v_j/features/vendor/daily_entries/data/models/daily_entry_model.dart';
-import 'package:p_v_j/features/vendor/daily_entries/data/models/leave_model.dart';
+import 'package:p_v_j/features/vendor/leaves/data/models/leave_model.dart';
 import 'package:p_v_j/features/vendor/daily_entries/data/services/daily_entry_service.dart';
 import 'package:p_v_j/features/vendor/leaves/data/models/customer_leave_model.dart';
 import 'package:p_v_j/features/vendor/leaves/data/services/leave_service.dart';
@@ -17,9 +17,9 @@ import 'package:p_v_j/features/vendor/subscriptions/data/services/subscription_s
 
 class DailyEntryController extends GetxController {
   final DailyEntryService _dailyService = Get.put(DailyEntryService());
-  final SubscriptionService _subService = Get.put(SubscriptionService());
-  final CustomerService _customerService = Get.put(CustomerService());
-  final ProductService _productService = Get.put(ProductService());
+  final SubscriptionService _subService = Get.find<SubscriptionService>();
+  final CustomerService _customerService = Get.find<CustomerService>();
+  final ProductService _productService = Get.find<ProductService>();
   final LeaveService _leaveService = Get.put(LeaveService());
 
   Rx<DateTime> selectedDate =
@@ -79,37 +79,46 @@ class DailyEntryController extends GetxController {
     selectedDate.value = DateTime(date.year, date.month, date.day);
   }
 
-  // Check if a specific target (vendor or customer) is on leave for the selected date
-  bool isOnLeave(String? customerId) {
+  // Check if the vendor is on holiday for the selected date
+  bool isVendorOnHoliday() {
     String currentDayStr = DateFormat('yyyy-MM-dd').format(selectedDate.value);
-
-    // 1. Check Vendor's private holidays
-    final bool onVendorHoliday = leaves.any((leave) {
-      bool isTargetMatch =
-          (leave.type == 'vendor' || leave.targetId == customerId);
-      if (!isTargetMatch) return false;
+    return leaves.any((leave) {
+      if (leave.type != 'vendor') return false;
       String startStr = DateFormat('yyyy-MM-dd').format(leave.startDate);
       String endStr = DateFormat('yyyy-MM-dd').format(leave.endDate);
       return currentDayStr.compareTo(startStr) >= 0 &&
           currentDayStr.compareTo(endStr) <= 0;
     });
+  }
 
-    if (onVendorHoliday) return true;
+  // Check if a specific customer is on leave for the selected date
+  bool isCustomerOnLeave(String customerId) {
+    String currentDayStr = DateFormat('yyyy-MM-dd').format(selectedDate.value);
 
-    // 2. Check Approved Customer Leave Requests
-    if (customerId != null) {
-      return customerLeaves.any((req) {
-        if (req.customerId != customerId || req.status != 'Approved') {
-          return false;
-        }
-        String startStr = DateFormat('yyyy-MM-dd').format(req.startDate);
-        String endStr = DateFormat('yyyy-MM-dd').format(req.endDate);
-        return currentDayStr.compareTo(startStr) >= 0 &&
-            currentDayStr.compareTo(endStr) <= 0;
-      });
-    }
+    // 1. Check vendor's private per-customer holidays
+    final bool onVendorCustomerHoliday = leaves.any((leave) {
+      if (leave.targetId != customerId) return false;
+      String startStr = DateFormat('yyyy-MM-dd').format(leave.startDate);
+      String endStr = DateFormat('yyyy-MM-dd').format(leave.endDate);
+      return currentDayStr.compareTo(startStr) >= 0 &&
+          currentDayStr.compareTo(endStr) <= 0;
+    });
+    if (onVendorCustomerHoliday) return true;
 
-    return false;
+    // 2. Check approved customer leave requests
+    return customerLeaves.any((req) {
+      if (req.customerId != customerId || req.status != 'Approved') return false;
+      String startStr = DateFormat('yyyy-MM-dd').format(req.startDate);
+      String endStr = DateFormat('yyyy-MM-dd').format(req.endDate);
+      return currentDayStr.compareTo(startStr) >= 0 &&
+          currentDayStr.compareTo(endStr) <= 0;
+    });
+  }
+
+  // Legacy wrapper — kept for backward compatibility
+  bool isOnLeave(String? customerId) {
+    if (customerId == null) return isVendorOnHoliday();
+    return isVendorOnHoliday() || isCustomerOnLeave(customerId);
   }
 
   List<SubscriptionModel> get activeSubscriptionsForDay {
@@ -190,7 +199,7 @@ class DailyEntryController extends GetxController {
 
   Future<void> updateQuantity(
       SubscriptionModel sub, DailyEntryModel currentEntry, int newQty) async {
-    if (newQty < 0) return;
+    if (newQty < 1) return;
 
     if (isOnLeave(null)) {
       SnackbarUtils.showInfo('Cannot change quantity - Vendor is on holiday!');

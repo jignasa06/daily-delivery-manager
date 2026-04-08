@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/services/auth_service.dart';
@@ -22,6 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
 
+  void _forgotPassword() async {
+    final email = emailController.text.trim();
+    if (email.isEmpty) {
+      SnackbarUtils.showError('Enter your email first');
+      return;
+    }
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      SnackbarUtils.showSuccess('Password reset email sent!');
+    } on FirebaseAuthException catch (e) {
+      SnackbarUtils.showError(e.message ?? 'Failed to send reset email');
+    }
+  }
+
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -35,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       
       if (result != null) {
         debugPrint("LoginScreen: Login successful for ${result.user?.email}");
-        Get.offAllNamed('/home');
+        // AuthService._setInitialScreen() handles role-based routing via ever()
       }
     } else {
       SnackbarUtils.showError(AppStrings.fixErrors);
@@ -106,7 +121,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               isPassword: true,
                               validator: (val) => val != null && val.isNotEmpty ? null : AppStrings.requiredField,
                             ),
-                            const SizedBox(height: 32),
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: _forgotPassword,
+                                child: Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
                             _buildSubmitButton(),
                           ],
                         ),

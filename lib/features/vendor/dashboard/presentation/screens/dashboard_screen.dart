@@ -60,21 +60,37 @@ class DashboardScreen extends StatelessWidget {
               physics: const ClampingScrollPhysics(),
               padding: EdgeInsets.zero,
               children: [
-                const DrawerHeader(
-                  decoration: BoxDecoration(color: AppColors.primary),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.business_center,
-                          color: Colors.white, size: 48),
-                      SizedBox(height: 12),
-                      Text('Vendor Dashboard',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                    ],
-                  ),
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: AppColors.primary),
+                  child: Obx(() {
+                    final data = controller.vendorInfo.value;
+                    final name = data?['businessName'] ?? 'Vendor Dashboard';
+                    final email = data?['email'] ?? '';
+                    final phone = data?['phone'] ?? '';
+
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.business_center,
+                            color: Colors.white, size: 36),
+                        const SizedBox(height: 8),
+                        Text(name,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                        if (email.isNotEmpty)
+                          Text(email,
+                              style: const TextStyle(
+                                  color: Colors.white70, fontSize: 11)),
+                        if (phone.isNotEmpty)
+                          Text(phone,
+                              style: const TextStyle(
+                                  color: Colors.white70, fontSize: 11)),
+                      ],
+                    );
+                  }),
                 ),
                 ListTile(
                   leading: const Icon(Icons.sync_alt, color: AppColors.primary),

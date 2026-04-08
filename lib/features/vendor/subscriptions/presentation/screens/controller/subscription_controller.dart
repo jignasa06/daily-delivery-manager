@@ -10,9 +10,9 @@ import '../../../../products/data/services/product_service.dart';
 
 class SubscriptionController extends GetxController {
   final SubscriptionService _subscriptionService =
-      Get.put(SubscriptionService());
-  final CustomerService _customerService = Get.put(CustomerService());
-  final ProductService _productService = Get.put(ProductService());
+      Get.find<SubscriptionService>();
+  final CustomerService _customerService = Get.find<CustomerService>();
+  final ProductService _productService = Get.find<ProductService>();
 
   RxList<SubscriptionModel> subscriptions = <SubscriptionModel>[].obs;
   RxList<CustomerModel> customers = <CustomerModel>[].obs;

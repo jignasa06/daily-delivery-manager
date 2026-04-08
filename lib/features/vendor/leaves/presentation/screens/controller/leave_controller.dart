@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:p_v_j/features/vendor/daily_entries/data/models/leave_model.dart';
+import 'package:p_v_j/features/vendor/leaves/data/models/leave_model.dart';
 import 'package:p_v_j/features/vendor/leaves/data/services/leave_service.dart';
 import 'package:p_v_j/features/vendor/customers/data/models/customer_model.dart';
 import 'package:p_v_j/features/vendor/customers/data/services/customer_service.dart';

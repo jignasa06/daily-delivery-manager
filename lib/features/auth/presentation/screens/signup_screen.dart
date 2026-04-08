@@ -7,7 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_styles.dart';
 
 import '../../../../core/widgets/common_text_field.dart';
-import '../../../../core/widgets/common_role_selector.dart';
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,7 +17,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  String role = AppStrings.roleUser;
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -32,7 +31,7 @@ class _SignupScreenState extends State<SignupScreen> {
         emailController.text.trim(),
         passwordController.text.trim(),
         nameController.text.trim(),
-        role,
+        // Role is determined by the invite system in AuthService
       );
       
       // AuthService._setInitialScreen will handle role-based redirection
@@ -120,13 +119,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               validator: (val) => val != null && val.length >= 6
                                   ? null
                                   : AppStrings.passwordTooShort,
-                            ),
-                            const SizedBox(height: 24),
-                            _buildLabel(AppStrings.roleSelectorSignup),
-                            const SizedBox(height: 12),
-                             CommonRoleSelector(
-                              currentRole: role,
-                              onRoleChanged: (newRole) => setState(() => role = newRole),
                             ),
                             const SizedBox(height: 32),
                             _buildSubmitButton(),

@@ -42,6 +42,16 @@ class BillingService extends GetxService {
         return null;
       }
 
+      // Check for existing bill to prevent duplicates
+      final existingBills = await _vendorBills
+          .where('customerId', isEqualTo: customerId)
+          .where('monthYear', isEqualTo: monthYear)
+          .get();
+      if (existingBills.docs.isNotEmpty) {
+        SnackbarUtils.showError('Bill already generated for this month');
+        return null;
+      }
+
       // 2. Fetch current prices of products
       final productsSnapshot = await vendorDoc.collection('products').get();
       Map<String, double> productPrices = {};

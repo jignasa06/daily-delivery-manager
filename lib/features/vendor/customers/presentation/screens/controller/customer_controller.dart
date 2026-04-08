@@ -4,7 +4,7 @@ import '../../../data/models/customer_model.dart';
 import '../../../data/services/customer_service.dart';
 
 class CustomerManagementController extends GetxController {
-  final CustomerService _customerService = Get.put(CustomerService());
+  final CustomerService _customerService = Get.find<CustomerService>();
   RxList<CustomerModel> customers = <CustomerModel>[].obs;
 
   final formKey = GlobalKey<FormState>();

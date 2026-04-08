@@ -43,7 +43,7 @@ class CustomerHomeTab extends StatelessWidget {
           const CircleAvatar(radius: 40, backgroundColor: Colors.white24, child: Icon(Icons.person, size: 50, color: Colors.white)),
           const SizedBox(height: 16),
           Obx(() => Text(
-            auth.firebaseUser.value?.email ?? 'Customer',
+            auth.firebaseUser.value?.displayName ?? auth.firebaseUser.value?.email ?? 'Customer',
             style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           )),
           const Text('Trusted Subscriber', style: TextStyle(color: Colors.white70, fontSize: 13, letterSpacing: 1.1)),

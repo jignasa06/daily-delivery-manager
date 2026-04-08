@@ -63,7 +63,7 @@ class CustomerBillingTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '₹${bill.totalAmount}',
+                    '₹${bill.totalAmount.toStringAsFixed(2)}',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppColors.primary),
                   ),
                 ],
