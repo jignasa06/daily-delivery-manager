@@ -253,9 +253,8 @@ android/.idea/workspace.xml
 *.lock
 ios/Runner.xcodeproj/project.pbxproj
 env
-google-services.json
 
-google-services.json
+
 
 # GetStorage File
 GetStorage.bak
