@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/auth/presentation/screens/signup_screen.dart';
+
+import 'features/vendor/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:p_v_j/features/customer/presentation/screens/customer_main_screen.dart';
+
+import 'core/config/app_config.dart';
+import 'core/theme/app_theme.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: AppConfig.instance.appName,
+      debugShowCheckedModeBanner: !AppConfig.instance.isProduction,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      initialRoute: '/login',
+      getPages: [
+        GetPage(name: '/login', page: () => const LoginScreen()),
+        GetPage(name: '/signup', page: () => const SignupScreen()),
+        GetPage(name: '/home', page: () => DashboardScreen()),
+        GetPage(name: '/customer-home', page: () => const CustomerMainScreen()),
+      ],
+    );
+  }
+}
