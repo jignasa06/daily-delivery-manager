@@ -22,6 +22,30 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_validateForm);
+    passwordController.addListener(_validateForm);
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _validateForm() {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final isValid = GetUtils.isEmail(email) && password.isNotEmpty;
+    if (isValid != _isFormValid) {
+      setState(() => _isFormValid = isValid);
+    }
+  }
 
   void _forgotPassword() async {
     final email = emailController.text.trim();
@@ -52,8 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
         debugPrint("LoginScreen: Login successful for ${result.user?.email}");
         // AuthService._setInitialScreen() handles role-based routing via ever()
       }
-    } else {
-      SnackbarUtils.showError(AppStrings.fixErrors);
     }
   }
 
@@ -276,13 +298,16 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: _isLoading ? null : _submit,
+        onPressed: (_isFormValid && !_isLoading) ? _submit : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
+          disabledForegroundColor: Colors.white.withValues(alpha: 0.6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          elevation: 2,
+          elevation: _isFormValid ? 2 : 0,
         ),
         child: _isLoading
             ? const SizedBox(
@@ -292,7 +317,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: AppColors.backgroundWhite, strokeWidth: 2))
             : Text(
                 AppStrings.btnSignIn,
-                style: AppStyles.primaryButton,
+                style: AppStyles.primaryButton.copyWith(
+                  color: _isFormValid ? Colors.white : Colors.white.withValues(alpha: 0.6),
+                ),
               ),
       ),
     );
