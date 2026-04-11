@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../subscriptions/data/models/subscription_model.dart';
-import '../../../../subscriptions/data/services/subscription_service.dart';
-import '/core/utils/snackbar_utils.dart';
+import 'package:p_v_j/core/utils/snackbar_utils.dart';
 import 'package:p_v_j/features/vendor/customers/data/models/customer_model.dart';
-import 'package:p_v_j/features/vendor/customers/data/services/customer_service.dart';
-import '../../../../products/data/models/product_model.dart';
-import '../../../../products/data/services/product_service.dart';
+import 'package:p_v_j/features/vendor/customers/domain/repositories/i_customer_repository.dart';
+import 'package:p_v_j/features/vendor/products/data/models/product_model.dart';
+import 'package:p_v_j/features/vendor/products/domain/repositories/i_product_repository.dart';
+import 'package:p_v_j/features/vendor/subscriptions/data/models/subscription_model.dart';
+import 'package:p_v_j/features/vendor/subscriptions/domain/repositories/i_subscription_repository.dart';
 
 class SubscriptionController extends GetxController {
-  final SubscriptionService _subscriptionService =
-      Get.find<SubscriptionService>();
-  final CustomerService _customerService = Get.find<CustomerService>();
-  final ProductService _productService = Get.find<ProductService>();
+  // --- REPOSITORY INJECTION ---
+  final ISubscriptionRepository _subscriptionRepository = Get.find<ISubscriptionRepository>();
+  final IProductRepository _productRepository = Get.find<IProductRepository>();
+  final ICustomerRepository _customerRepository = Get.find<ICustomerRepository>();
 
   RxList<SubscriptionModel> subscriptions = <SubscriptionModel>[].obs;
   RxList<CustomerModel> customers = <CustomerModel>[].obs;
@@ -27,21 +27,15 @@ class SubscriptionController extends GetxController {
 
   RxList<String> selectedDays = <String>[].obs;
   final List<String> weekDays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
 
   @override
   void onInit() {
     super.onInit();
-    subscriptions.bindStream(_subscriptionService.getSubscriptions());
-    customers.bindStream(_customerService.getCustomers());
-    products.bindStream(_productService.getProducts());
+    subscriptions.bindStream(_subscriptionRepository.getSubscriptions());
+    customers.bindStream(_customerRepository.getCustomers());
+    products.bindStream(_productRepository.getProducts());
   }
 
   String getCustomerName(String id) =>
@@ -54,11 +48,10 @@ class SubscriptionController extends GetxController {
   void openForm() {
     selectedCustomerId = null;
     selectedProductId = null;
-    selectedStartDate.value =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    selectedStartDate.value = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     selectedEndDate.value = null;
     defaultQuantityController.text = '1';
-    selectedDays.value = List.from(weekDays); // Default to all days
+    selectedDays.value = List.from(weekDays); 
   }
 
   void toggleDay(String day) {
@@ -69,7 +62,7 @@ class SubscriptionController extends GetxController {
     }
   }
 
-  void saveSubscription() {
+  Future<void> saveSubscription() async {
     if (formKey.currentState!.validate()) {
       if (selectedCustomerId == null || selectedProductId == null) {
         SnackbarUtils.showError('Please select both Customer and Product');
@@ -87,17 +80,26 @@ class SubscriptionController extends GetxController {
         startDate: selectedStartDate.value,
         endDate: selectedEndDate.value,
         selectedDays: selectedDays,
-        defaultQuantity:
-            int.tryParse(defaultQuantityController.text.trim()) ?? 1,
+        defaultQuantity: int.tryParse(defaultQuantityController.text.trim()) ?? 1,
         subscriptionType: 'monthly',
       );
 
-      _subscriptionService.addSubscription(sub);
-      Get.back();
+      try {
+        await _subscriptionRepository.addSubscription(sub);
+        SnackbarUtils.showSuccess('Subscription linked successfully');
+        Get.back();
+      } catch (e) {
+        SnackbarUtils.showError(e.toString());
+      }
     }
   }
 
-  void deleteSubscription(String id) {
-    _subscriptionService.deleteSubscription(id);
+  Future<void> deleteSubscription(String id) async {
+    try {
+      await _subscriptionRepository.deleteSubscription(id);
+      SnackbarUtils.showSuccess('Subscription deleted successfully');
+    } catch (e) {
+      SnackbarUtils.showError(e.toString());
+    }
   }
 }

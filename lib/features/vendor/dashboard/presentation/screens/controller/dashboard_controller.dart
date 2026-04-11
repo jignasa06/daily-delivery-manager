@@ -1,31 +1,41 @@
 import 'package:get/get.dart';
-import 'package:p_v_j/features/vendor/products/data/services/product_service.dart';
-import 'package:p_v_j/features/vendor/customers/data/services/customer_service.dart';
-import 'package:p_v_j/features/vendor/subscriptions/data/services/subscription_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:p_v_j/core/services/auth_service.dart';
+import 'package:p_v_j/features/vendor/daily_entries/presentation/screens/controller/daily_entry_controller.dart';
+import 'package:p_v_j/features/vendor/dashboard/domain/repositories/i_vendor_repository.dart';
+import 'package:p_v_j/features/vendor/products/domain/repositories/i_product_repository.dart';
+import 'package:p_v_j/features/vendor/dashboard/data/models/vendor_model.dart';
 
 class DashboardController extends GetxController {
-  final ProductService _productService = Get.put(ProductService());
-  final CustomerService _customerService = Get.put(CustomerService());
-  final SubscriptionService _subscriptionService =
-      Get.put(SubscriptionService());
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // --- REPOSITORY INJECTION (Backend Agnostic) ---
+  final IProductRepository _productRepository = Get.find<IProductRepository>();
+  final IVendorRepository _vendorRepository = Get.find<IVendorRepository>();
+
+  // App Services
+  final DailyEntryController _dailyController = Get.put(DailyEntryController());
   final AuthService _auth = Get.find<AuthService>();
 
-  Rxn<Map<String, dynamic>> vendorInfo = Rxn();
-
+  // Observable State
+  Rxn<VendorModel> vendorInfo = Rxn();
   RxInt currentIndex = 0.obs;
+
+  // High-Impact Metrics
   RxInt totalProducts = 0.obs;
-  RxInt totalCustomers = 0.obs;
-  RxInt totalSubscriptions = 0.obs;
+  RxInt todayDeliveredCount = 0.obs;
+  RxInt todayTotalCount = 0.obs;
+
+  // Derived Summary Stats (for SetupProgressWidget)
+  bool get isSetupComplete => vendorInfo.value?.isProfileSetup ?? false;
+  int get totalCustomers => _dailyController.customers.length;
+  int get totalSubscriptions => _dailyController.allSubscriptions.length;
 
   final List<String> appBarTitles = [
-    'My Products',
+    'Dashboard Overview',
     'My Customers',
-    'Manage Subscriptions',
-    'Daily Check-in',
-    'Bills & Reports',
+    'Daily Deliveries',
+    'Business Profile',
+    'Product Catalog',
+    'Subscriptions',
+    'Billing & Invoices',
     'Holidays & Leaves',
   ];
 
@@ -33,39 +43,44 @@ class DashboardController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // Bind counts for the setup checklist
-    totalProducts
-        .bindStream(_productService.getProducts().map((list) => list.length));
-    totalCustomers
-        .bindStream(_customerService.getCustomers().map((list) => list.length));
-    totalSubscriptions.bindStream(
-        _subscriptionService.getSubscriptions().map((list) => list.length));
+    // 1. Bind Product Metrics via Repository
+    totalProducts.bindStream(
+        _productRepository.getProducts().map((list) => list.length));
 
-    // Bind Vendor Info
+    // 2. Bind Vendor Info via Repository
     ever(_auth.currentVendorId, (String vendorId) {
       if (vendorId.isNotEmpty) {
-        vendorInfo.bindStream(_firestore
-            .collection('vendors')
-            .doc(vendorId)
-            .snapshots()
-            .map((doc) => doc.data()));
+        vendorInfo.bindStream(_vendorRepository.getVendorInfo(vendorId));
       }
     });
 
     // Initial bind if vendorId is already present
     if (_auth.currentVendorId.value.isNotEmpty) {
-      vendorInfo.bindStream(_firestore
-          .collection('vendors')
-          .doc(_auth.currentVendorId.value)
-          .snapshots()
-          .map((doc) => doc.data()));
+      vendorInfo.bindStream(
+          _vendorRepository.getVendorInfo(_auth.currentVendorId.value));
     }
+
+    // 3. Bind Delivery Metrics (Derived from DailyController)
+    ever(_dailyController.todayEntries, (_) => _updateDeliveryMetrics());
+    ever(_dailyController.allSubscriptions, (_) => _updateDeliveryMetrics());
+    ever(_dailyController.selectedDate, (_) => _updateDeliveryMetrics());
+
+    // Initial update
+    _updateDeliveryMetrics();
   }
 
-  bool get isSetupComplete =>
-      totalProducts.value > 0 &&
-      totalCustomers.value > 0 &&
-      totalSubscriptions.value > 0;
+  void _updateDeliveryMetrics() {
+    final active = _dailyController.activeSubscriptionsForDay;
+    todayTotalCount.value = active.length;
+
+    int delivered = 0;
+    for (var sub in active) {
+      if (_dailyController.todayEntries[sub.id]?.isDelivered ?? false) {
+        delivered++;
+      }
+    }
+    todayDeliveredCount.value = delivered;
+  }
 
   void changePage(int index) {
     currentIndex.value = index;

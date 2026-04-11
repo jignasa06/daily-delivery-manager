@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'controller/product_controller.dart';
+import '../widgets/catalog_header.dart';
+import '../widgets/product_list_item.dart';
 import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
 import '/core/widgets/common_text_field.dart';
-
 
 class ProductsScreen extends StatelessWidget {
   ProductsScreen({super.key});
@@ -12,168 +14,180 @@ class ProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Obx(() {
+    return Scaffold(
+      backgroundColor: Colors.transparent, // Inherit from Dashboard background
+      body: Stack(
+        children: [
+          Obx(() {
             if (controller.products.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.inventory_2_outlined,
-                          size: 80,
-                          color: AppColors.primary.withValues(alpha: 0.2)),
-                      const SizedBox(height: 24),
-                      const Text(
-                        "No Products Yet",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textMain),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Before you can add customers or subscriptions, you need to define what you're selling.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: AppColors.textSecondary),
-                      ),
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        onPressed: () => _showProductDialog(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text("Add My First Product",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              return _buildEmptyState(context);
             }
-            return Stack(
-              children: [
-                ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  itemCount: controller.products.length,
-                  itemBuilder: (context, index) {
-                    final product = controller.products[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: ListTile(
-                        leading: const CircleAvatar(
-                            backgroundColor: AppColors.primaryLight,
-                            child: Icon(Icons.inventory_2,
-                                color: AppColors.primary)),
-                        title: Text(product.name,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle:
-                            Text("${product.pricePerUnit} / ${product.unit}"),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete_outline,
-                              color: AppColors.error),
-                          onPressed: () => controller.deleteProduct(product.id),
-                        ),
-                        onTap: () => _showProductDialog(context, product),
-                      ),
-                    );
-                  },
-                ),
-                Positioned(
-                  bottom: 16,
-                  right: 16,
-                  child: FloatingActionButton(
-                    backgroundColor: AppColors.primary,
-                    onPressed: () => _showProductDialog(context),
-                    child: const Icon(Icons.add, color: Colors.white),
+            return ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 120), // Space for FAB and Nav
+              itemCount: controller.products.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return CatalogHeader(activeProducts: controller.products.length);
+                }
+                final product = controller.products[index - 1];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: ProductListItem(
+                    product: product,
+                    onEdit: () => _showProductDialog(context, product),
                   ),
-                )
-              ],
+                );
+              },
             );
           }),
+          
+          // FAB
+          Positioned(
+            bottom: 32,
+            right: 24,
+            child: GestureDetector(
+              onTap: () => _showProductDialog(context),
+              child: Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    )
+                  ],
+                ),
+                child: const Icon(Icons.add, color: Colors.white, size: 32),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLow,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.inventory_2_outlined,
+                size: 80,
+                color: AppColors.primary.withOpacity(0.4),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              "Your Catalog is Empty",
+              style: AppStyles.displayLg(context).copyWith(fontSize: 24),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Define your product inventory to start managing deliveries and subscriptions.",
+              textAlign: TextAlign.center,
+              style: AppStyles.bodyMd(context).copyWith(color: AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(height: 48),
+            ElevatedButton(
+              onPressed: () => _showProductDialog(context),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(200, 56),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+              ),
+              child: const Text("CREATE FIRST PRODUCT"),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   void _showProductDialog(BuildContext context, [product]) {
     controller.openForm(product);
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-                left: 24,
-                right: 24,
-                top: 24),
-            child: Form(
-              key: controller.formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(product == null ? 'Add Product' : 'Edit Product',
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  CommonTextField(
-                    controller: controller.nameController,
-                    hint: 'Product Name (e.g. Buffalo Milk)',
-                    icon: Icons.label_outline,
-                    validator: (val) => val!.isEmpty ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 12),
-                  CommonTextField(
-                    controller: controller.unitController,
-                    hint: 'Unit (e.g. Liter, Pkt)',
-                    icon: Icons.straighten_outlined,
-                    validator: (val) => val!.isEmpty ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 12),
-                  CommonTextField(
-                    controller: controller.priceController,
-                    hint: 'Price per Unit',
-                    icon: Icons.currency_rupee,
-                    isNumber: true,
-                    validator: (val) => val!.isEmpty ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12))),
-                      onPressed: controller.saveProduct,
-                      child: const Text('Save',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surfaceContainerLowest,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 32,
+            right: 32,
+            top: 32,
+          ),
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product == null ? 'New Product' : 'Edit Product',
+                  style: AppStyles.headlineSm(context).copyWith(fontSize: 24),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Enter product details accurately for your catalog.",
+                  style: AppStyles.bodySm(context),
+                ),
+                const SizedBox(height: 32),
+                CommonTextField(
+                  controller: controller.nameController,
+                  hint: 'Product Name (e.g. Buffalo Milk)',
+                  icon: Icons.label_outline,
+                  validator: (val) => val!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                CommonTextField(
+                  controller: controller.unitController,
+                  hint: 'Unit (e.g. 1L Bottle, 500g)',
+                  icon: Icons.straighten_outlined,
+                  validator: (val) => val!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                CommonTextField(
+                  controller: controller.priceController,
+                  hint: 'Price per Unit',
+                  icon: Icons.attach_money,
+                  isNumber: true,
+                  validator: (val) => val!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: controller.saveProduct,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     ),
+                    child: const Text('SAVE PRODUCT'),
                   ),
-                  const SizedBox(height: 24),
-                ],
-              ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

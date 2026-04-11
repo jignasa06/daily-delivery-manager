@@ -105,7 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: context.pw(65),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: Colors.white.withOpacity(0.1),
                 ),
               ),
             ),
@@ -117,7 +117,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: context.pw(55),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: Colors.white.withOpacity(0.05),
                 ),
               ),
             ),
@@ -153,7 +153,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 borderRadius: BorderRadius.circular(24),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
+                                    color: Colors.black.withOpacity(0.1),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                   )
@@ -181,9 +181,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                             decoration: BoxDecoration(
-                                              color: AppColors.primary.withValues(alpha: 0.1),
+                                              color: AppColors.primary.withOpacity(0.1),
                                               borderRadius: BorderRadius.circular(20),
-                                              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                                              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                                             ),
                                             child: Text(
                                               'change'.tr,
@@ -265,8 +265,8 @@ class _SignupScreenState extends State<SignupScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
-          disabledForegroundColor: Colors.white.withValues(alpha: 0.6),
+          disabledBackgroundColor: AppColors.primary.withOpacity(0.3),
+          disabledForegroundColor: Colors.white.withOpacity(0.6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -281,7 +281,7 @@ class _SignupScreenState extends State<SignupScreen> {
             : Text(
                 AppStrings.btnRegister,
                 style: AppStyles.primaryButton(context).copyWith(
-                  color: _isFormValid ? Colors.white : Colors.white.withValues(alpha: 0.6),
+                  color: _isFormValid ? Colors.white : Colors.white.withOpacity(0.6),
                 ),
               ),
       ),

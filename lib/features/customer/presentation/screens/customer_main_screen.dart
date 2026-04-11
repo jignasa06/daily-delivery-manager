@@ -87,7 +87,7 @@ class _CustomerMainScreenState extends State<CustomerMainScreen> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, spreadRadius: 0)],
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, spreadRadius: 0)],
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,

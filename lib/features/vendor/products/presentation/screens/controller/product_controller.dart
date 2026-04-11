@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/product_model.dart';
-import '../../../data/services/product_service.dart';
+import '../../../domain/repositories/i_product_repository.dart';
 
 class ProductController extends GetxController {
-  final ProductService _productService = Get.put(ProductService());
+  // --- REPOSITORY INJECTION (Backend Agnostic) ---
+  final IProductRepository _productRepository = Get.find<IProductRepository>();
+  
   RxList<ProductModel> products = <ProductModel>[].obs;
 
   final formKey = GlobalKey<FormState>();
@@ -17,7 +19,8 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    products.bindStream(_productService.getProducts());
+    // Bind stream from repository (could be Firebase or Mock)
+    products.bindStream(_productRepository.getProducts());
   }
 
   void openForm([ProductModel? product]) {
@@ -36,22 +39,22 @@ class ProductController extends GetxController {
   void saveProduct() {
     if (formKey.currentState!.validate()) {
       final product = ProductModel(
-        id: editingProduct?.id ?? '', // Service will ignore empty id on insert if handled, but wait, add doesn't pass ID. 
+        id: editingProduct?.id ?? '', 
         name: nameController.text.trim(),
         unit: unitController.text.trim(),
         pricePerUnit: double.tryParse(priceController.text.trim()) ?? 0.0,
       );
 
       if (editingProduct == null) {
-        _productService.addProduct(product);
+        _productRepository.addProduct(product);
       } else {
-        _productService.updateProduct(product);
+        _productRepository.updateProduct(product);
       }
       Get.back(); // close dialog/bottomsheet
     }
   }
 
   void deleteProduct(String id) {
-    _productService.deleteProduct(id);
+    _productRepository.deleteProduct(id);
   }
 }

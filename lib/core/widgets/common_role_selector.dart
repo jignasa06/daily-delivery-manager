@@ -21,7 +21,7 @@ class CommonRoleSelector extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surfaceOffWhite,
+          color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.surfaceOffWhite,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.surfaceLightGrey,

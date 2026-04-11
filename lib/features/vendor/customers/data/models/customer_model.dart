@@ -6,6 +6,7 @@ class CustomerModel {
   String phone;
   String address;
   String email;
+  String? profileImageUrl;
 
   CustomerModel({
     required this.id,
@@ -13,6 +14,7 @@ class CustomerModel {
     required this.phone,
     required this.address,
     required this.email,
+    this.profileImageUrl,
   });
 
   factory CustomerModel.fromFirestore(DocumentSnapshot doc) {
@@ -23,6 +25,7 @@ class CustomerModel {
       phone: data['phone'] ?? '',
       address: data['address'] ?? '',
       email: data['email'] ?? '',
+      profileImageUrl: data['profileImageUrl'],
     );
   }
 
@@ -32,6 +35,7 @@ class CustomerModel {
       'phone': phone,
       'address': address,
       'email': email,
+      'profileImageUrl': profileImageUrl,
     };
   }
 }

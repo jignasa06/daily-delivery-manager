@@ -5,11 +5,12 @@ import 'package:get_storage/get_storage.dart';
 import 'app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/service_locator.dart';
-// import 'firebase_options_prod.dart'; // User needs to run `flutterfire configure` for Prod
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  
   AppConfig.initialize(
     AppConfig(
       environment: Environment.prod,
@@ -18,11 +19,14 @@ Future<void> main() async {
     ),
   );
   
-  // await Firebase.initializeApp(options: DefaultFirebaseOptionsProd.currentPlatform);
   try {
-    await Firebase.initializeApp();
+    // Standard initialization using the generated options
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
-    debugPrint("Firebase init failed: $e. Did you run flutterfire configure?");
+    debugPrint("Firebase init failed: $e. Using fallback initialization.");
+    await Firebase.initializeApp();
   }
 
   await setupServiceLocator();

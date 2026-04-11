@@ -3,6 +3,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'controller/billing_controller.dart';
 import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
+import 'package:p_v_j/features/vendor/customers/data/models/customer_model.dart';
+import 'package:p_v_j/features/vendor/billing/data/models/bill_model.dart';
+import 'package:collection/collection.dart';
 
 class BillingScreen extends StatelessWidget {
   BillingScreen({super.key});
@@ -11,27 +15,23 @@ class BillingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceOffWhite,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildMonthSelector(context),
-            Expanded(
-              child: Obx(() {
+    return Column(
+      children: [
+        _buildMonthSelector(context),
+        Expanded(
+          child: Obx(() {
                 final filtered = controller.filteredCustomers;
                 if (filtered.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.receipt_long_outlined,
-                            size: 64, color: AppColors.textHint),
-                        SizedBox(height: 16),
+                            size: 64, color: AppColors.indigoPrimary.withOpacity(0.1)),
+                        const SizedBox(height: 16),
                         Text("No active subscriptions found for this month.",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 16)),
+                            style: AppStyles.premiumCardBody(context)),
                       ],
                     ),
                   );
@@ -45,11 +45,9 @@ class BillingScreen extends StatelessWidget {
                     return _buildCustomerBillCard(context, customer);
                   },
                 );
-              }),
-            ),
-          ],
+          }),
         ),
-      ),
+      ],
     );
   }
 
@@ -62,7 +60,7 @@ class BillingScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: AppColors.cardShadow,
               blurRadius: 10,
               offset: const Offset(0, 4))
         ],
@@ -71,26 +69,23 @@ class BillingScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: AppColors.primary),
+            icon: const Icon(Icons.chevron_left, color: AppColors.indigoPrimary),
             onPressed: () => controller.changeMonth(-1),
           ),
           Row(
             children: [
               const Icon(Icons.calendar_month,
-                  color: AppColors.primary, size: 20),
+                  color: AppColors.indigoPrimary, size: 20),
               const SizedBox(width: 8),
               Obx(() => Text(
                     DateFormat('MMMM yyyy').format(DateFormat('yyyy-MM')
                         .parse(controller.selectedMonthYear.value)),
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textMain),
+                    style: AppStyles.premiumCardTitle(context),
                   )),
             ],
           ),
           IconButton(
-            icon: const Icon(Icons.chevron_right, color: AppColors.primary),
+            icon: const Icon(Icons.chevron_right, color: AppColors.indigoPrimary),
             onPressed: () => controller.changeMonth(1),
           ),
         ],
@@ -98,7 +93,7 @@ class BillingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomerBillCard(BuildContext context, customer) {
+  Widget _buildCustomerBillCard(BuildContext context, CustomerModel customer) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -106,31 +101,31 @@ class BillingScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: AppColors.cardShadow,
               blurRadius: 8,
-              offset: const Offset(0, 2))
+              offset: const Offset(0, 4))
         ],
       ),
       child: ExpansionTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         collapsedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        leading: const CircleAvatar(
-            backgroundColor: AppColors.primaryLight,
-            child: Icon(Icons.person, color: AppColors.primary)),
+        leading: CircleAvatar(
+            backgroundColor: AppColors.indigoPrimary.withOpacity(0.1),
+            child: const Icon(Icons.person, color: AppColors.indigoPrimary)),
         title: Text(customer.name,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        subtitle: const Text('View history & status'),
+            style: AppStyles.premiumCardTitle(context)),
+        subtitle: Text('View history & status', style: AppStyles.premiumCardBody(context).copyWith(fontSize: 12)),
         children: [
           Obx(() {
             final monthStr = controller.selectedMonthYear.value;
             final currentMonthLabel = DateFormat('MMMM yyyy')
                 .format(DateFormat('yyyy-MM').parse(monthStr));
 
-            return StreamBuilder(
+            return StreamBuilder<List<BillModel>>(
               stream: controller.getCustomerBills(customer.id),
               builder: (context, snapshot) {
-                final bills = snapshot.data as List? ?? [];
+                final bills = snapshot.data ?? [];
                 final currentMonthBill =
                     bills.firstWhereOrNull((b) => b.monthYear == monthStr);
                 final bool hasBill = currentMonthBill != null;
@@ -143,18 +138,19 @@ class BillingScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('CURRENT MONTH',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                          Text('CURRENT MONTH',
+                              style: AppStyles.premiumCardBody(context).copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1,
                                   color: AppColors.textHint)),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: hasBill
-                                  ? AppColors.success.withValues(alpha: 0.1)
-                                  : Colors.orange.withValues(alpha: 0.1),
+                                  ? AppColors.success.withOpacity(0.1)
+                                  : Colors.orange.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -174,23 +170,21 @@ class BillingScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.05),
+                              color: AppColors.indigoPrimary.withOpacity(0.05),
                               border: Border.all(
                                   color:
-                                      AppColors.primary.withValues(alpha: 0.1)),
+                                      AppColors.indigoPrimary.withOpacity(0.1)),
                               borderRadius: BorderRadius.circular(12)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(currentMonthLabel,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
+                                  style: AppStyles.premiumCardTitle(context).copyWith(fontSize: 14)),
                               Text(
-                                  "₹${currentMonthBill.totalAmount.toStringAsFixed(2)}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  "₹${currentMonthBill!.totalAmount.toStringAsFixed(2)}",
+                                  style: AppStyles.premiumCardTitle(context).copyWith(
                                       fontSize: 18,
-                                      color: AppColors.primary)),
+                                      color: AppColors.indigoPrimary)),
                             ],
                           ),
                         ),
@@ -203,11 +197,9 @@ class BillingScreen extends StatelessWidget {
                             icon: const Icon(Icons.receipt_long,
                                 color: Colors.white, size: 20),
                             label: Text('Generate for $currentMonthLabel',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
+                                style: AppStyles.premiumButton(context)),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
+                              backgroundColor: AppColors.indigoPrimary,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -219,8 +211,9 @@ class BillingScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       const Text('BILLING HISTORY',
                           style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1,
                               color: AppColors.textHint)),
                       const SizedBox(height: 8),
                       if (bills.isEmpty)

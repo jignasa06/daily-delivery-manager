@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'controller/subscription_controller.dart';
 import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
 import '/core/widgets/common_text_field.dart';
 
 class SubscriptionsScreen extends StatelessWidget {
@@ -25,14 +26,11 @@ class SubscriptionsScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.sync_alt,
                           size: 80,
-                          color: AppColors.primary.withValues(alpha: 0.2)),
+                          color: AppColors.indigoPrimary.withOpacity(0.1)),
                       const SizedBox(height: 24),
-                      const Text(
+                      Text(
                         "No Subscriptions Yet",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textMain),
+                        style: AppStyles.dashboardHeading(context),
                       ),
                       const SizedBox(height: 8),
                       const Text(
@@ -44,17 +42,15 @@ class SubscriptionsScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () => _showSubscriptionDialog(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.indigoPrimary,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 14),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),
                         icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text("Create First Subscription",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        label: Text("Create First Subscription",
+                            style: AppStyles.premiumButton(context)),
                       ),
                     ],
                   ),
@@ -69,19 +65,27 @@ class SubscriptionsScreen extends StatelessWidget {
                   itemCount: controller.subscriptions.length,
                   itemBuilder: (context, index) {
                     final sub = controller.subscriptions[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                    return Container(
                       margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.cardShadow,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
                       child: ListTile(
-                        leading: const CircleAvatar(
-                            backgroundColor: AppColors.primaryLight,
+                        leading: CircleAvatar(
+                            backgroundColor: AppColors.indigoPrimary.withOpacity(0.1),
                             child:
-                                Icon(Icons.sync_alt, color: AppColors.primary)),
+                                const Icon(Icons.sync_alt, color: AppColors.indigoPrimary)),
                         title: Text(
                             "${controller.getCustomerName(sub.customerId)} - ${controller.getProductName(sub.productId)}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
+                            style: AppStyles.premiumCardTitle(context)),
                         subtitle: Text(
                             "Qty: ${sub.defaultQuantity} ${controller.getProductUnit(sub.productId)} \nDays: ${sub.selectedDays.map((d) => d.substring(0, 3)).join(', ')}"),
                         isThreeLine: true,
@@ -99,7 +103,8 @@ class SubscriptionsScreen extends StatelessWidget {
                   bottom: 16,
                   right: 16,
                   child: FloatingActionButton(
-                    backgroundColor: AppColors.primary,
+                    heroTag: 'add_subscription_fab',
+                    backgroundColor: AppColors.indigoPrimary,
                     onPressed: () => _showSubscriptionDialog(context),
                     child: const Icon(Icons.add, color: Colors.white),
                   ),
@@ -133,9 +138,8 @@ class SubscriptionsScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('New Subscription',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text('New Subscription',
+                        style: AppStyles.dashboardHeading(context)),
                     const SizedBox(height: 16),
 
                     // Customer Dropdown
@@ -185,12 +189,13 @@ class SubscriptionsScreen extends StatelessWidget {
                           children: controller.weekDays.map((day) {
                             final isSelected =
                                 controller.selectedDays.contains(day);
-                            return ChoiceChip(
-                              label: Text(day.substring(0, 3)),
-                              selected: isSelected,
-                              onSelected: (_) => controller.toggleDay(day),
-                              selectedColor: AppColors.primaryLight,
-                            );
+                             return ChoiceChip(
+                               label: Text(day.substring(0, 3)),
+                               selected: isSelected,
+                               onSelected: (_) => controller.toggleDay(day),
+                               selectedColor: AppColors.indigoPrimary.withOpacity(0.2),
+                               checkmarkColor: AppColors.indigoPrimary,
+                             );
                           }).toList(),
                         )),
                     const SizedBox(height: 24),
@@ -240,13 +245,12 @@ class SubscriptionsScreen extends StatelessWidget {
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: AppColors.indigoPrimary,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12))),
                         onPressed: controller.saveSubscription,
-                        child: const Text('Save Subscription',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16)),
+                        child: Text('Save Subscription',
+                            style: AppStyles.premiumButton(context)),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -262,11 +266,11 @@ class SubscriptionsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.withValues(alpha: 0.5)),
-          borderRadius: BorderRadius.circular(8)),
+          border: Border.all(color: AppColors.indigoPrimary.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today, size: 20, color: AppColors.primary),
+          const Icon(Icons.calendar_today, size: 20, color: AppColors.indigoPrimary),
           const SizedBox(width: 12),
           Text(
             date == null

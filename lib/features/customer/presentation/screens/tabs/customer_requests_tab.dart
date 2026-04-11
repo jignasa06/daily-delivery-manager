@@ -35,7 +35,7 @@ class CustomerRequestsTab extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.surfaceLightGrey),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 4, offset: const Offset(0, 2))],
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +45,7 @@ class CustomerRequestsTab extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: _getStatusColor(leave.status).withValues(alpha: 0.1),
+                          color: _getStatusColor(leave.status).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(Icons.beach_access, color: _getStatusColor(leave.status), size: 18),
@@ -89,7 +89,7 @@ class CustomerRequestsTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: _getStatusColor(status).withValues(alpha: 0.1),
+        color: _getStatusColor(status).withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

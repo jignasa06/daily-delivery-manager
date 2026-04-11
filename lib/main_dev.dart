@@ -5,11 +5,12 @@ import 'package:get_storage/get_storage.dart';
 import 'app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/service_locator.dart';
-// import 'firebase_options_dev.dart'; // User needs to run `flutterfire configure` to generate this
+import 'firebase_options.dart'; // Correct generated file
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  
   AppConfig.initialize(
     AppConfig(
       environment: Environment.dev,
@@ -18,13 +19,14 @@ Future<void> main() async {
     ),
   );
   
-  // Initialize default Firebase (from current firebase_options.dart)
-  // In a real environment split, you'd use Dev options here:
-  // await Firebase.initializeApp(options: DefaultFirebaseOptionsDev.currentPlatform);
   try {
-    await Firebase.initializeApp();
+    // Using the actual generated class name from FlutterFire CLI
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
-    debugPrint("Firebase init failed: $e. Did you run flutterfire configure?");
+    debugPrint("Firebase init failed: $e. Using fallback initialization.");
+    await Firebase.initializeApp();
   }
   
   await setupServiceLocator();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/customer_model.dart';
-import '../../../data/services/customer_service.dart';
+import 'package:p_v_j/features/vendor/customers/domain/repositories/i_customer_repository.dart';
 
 class CustomerManagementController extends GetxController {
-  final CustomerService _customerService = Get.find<CustomerService>();
+  final ICustomerRepository _customerRepository = Get.find<ICustomerRepository>();
   RxList<CustomerModel> customers = <CustomerModel>[].obs;
 
   final formKey = GlobalKey<FormState>();
@@ -18,7 +18,7 @@ class CustomerManagementController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    customers.bindStream(_customerService.getCustomers());
+    customers.bindStream(_customerRepository.getCustomers());
   }
 
   void openForm([CustomerModel? customer]) {
@@ -47,15 +47,15 @@ class CustomerManagementController extends GetxController {
       );
 
       if (editingCustomer == null) {
-        _customerService.addCustomer(customer);
+        _customerRepository.addCustomer(customer);
       } else {
-        _customerService.updateCustomer(customer);
+        _customerRepository.updateCustomer(customer);
       }
       Get.back();
     }
   }
 
   void deleteCustomer(String id) {
-    _customerService.deleteCustomer(id);
+    _customerRepository.deleteCustomer(id);
   }
 }

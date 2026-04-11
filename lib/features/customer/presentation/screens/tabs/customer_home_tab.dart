@@ -81,16 +81,16 @@ class CustomerHomeTab extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
+          border: Border.all(color: color.withOpacity(0.2)),
         ),
         child: Column(
           children: [
             Icon(icon, color: color, size: 28),
             const SizedBox(height: 8),
             Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: color)),
-            Text(sub, style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.7))),
+            Text(sub, style: TextStyle(fontSize: 10, color: color.withOpacity(0.7))),
           ],
         ),
       ),
@@ -123,10 +123,10 @@ class CustomerHomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white, 
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
+                    border: Border.all(color: AppColors.primary.withOpacity(0.1)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1), 
+                        color: Colors.black.withOpacity(0.1), 
                         blurRadius: 20, 
                         offset: const Offset(0, 8)
                       )
@@ -141,7 +141,7 @@ class CustomerHomeTab extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.1),
+                                color: AppColors.primary.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.shopping_bag_outlined, color: AppColors.primary, size: 24),
@@ -198,9 +198,9 @@ class CustomerHomeTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Text(
         label.toUpperCase(),
@@ -262,9 +262,9 @@ class CustomerHomeTab extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                    border: Border.all(color: AppColors.primary.withOpacity(0.3)),
                     borderRadius: BorderRadius.circular(12),
-                    color: AppColors.primary.withValues(alpha: 0.05),
+                    color: AppColors.primary.withOpacity(0.05),
                   ),
                   child: Row(
                     children: [
@@ -352,9 +352,9 @@ class CustomerHomeTab extends StatelessWidget {
       final data = controller.vendorInfo.value;
       if (data == null) return const SizedBox.shrink();
 
-      final businessName = data['businessName'] ?? 'Verified Provider';
-      final phone = data['phone'] ?? 'N/A';
-      final email = data['email'] ?? 'N/A';
+      final businessName = data.businessName;
+      final phone = data.phone;
+      final email = data.email;
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -363,8 +363,8 @@ class CustomerHomeTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.1), width: 2),
-            boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.05), blurRadius: 30, offset: const Offset(0, 15))],
+            border: Border.all(color: AppColors.primary.withOpacity(0.1), width: 2),
+            boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.05), blurRadius: 30, offset: const Offset(0, 15))],
           ),
           child: Column(
             children: [
@@ -427,7 +427,7 @@ class CustomerHomeTab extends StatelessWidget {
               ),
             ),
             if (onTap != null)
-              Icon(Icons.arrow_right_alt, color: (color ?? AppColors.primary).withValues(alpha: 0.5)),
+              Icon(Icons.arrow_right_alt, color: (color ?? AppColors.primary).withOpacity(0.5)),
           ],
         ),
       ),

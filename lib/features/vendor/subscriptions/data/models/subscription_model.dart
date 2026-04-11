@@ -8,6 +8,7 @@ class SubscriptionModel {
   DateTime? endDate;
   List<String> selectedDays; // e.g., ['Monday', 'Wednesday']
   int defaultQuantity;
+  String unit; // e.g., 'Ltr', 'Pkt'
   String subscriptionType; // e.g., 'monthly', 'custom', 'on-demand'
 
   SubscriptionModel({
@@ -18,6 +19,7 @@ class SubscriptionModel {
     this.endDate,
     required this.selectedDays,
     required this.defaultQuantity,
+    this.unit = 'Pkt',
     required this.subscriptionType,
   });
 
@@ -31,6 +33,7 @@ class SubscriptionModel {
       endDate: data['endDate'] != null ? (data['endDate'] as Timestamp).toDate() : null,
       selectedDays: List<String>.from(data['selectedDays'] ?? []),
       defaultQuantity: data['defaultQuantity'] ?? 1,
+      unit: data['unit'] ?? 'Pkt',
       subscriptionType: data['subscriptionType'] ?? 'monthly',
     );
   }
@@ -43,6 +46,7 @@ class SubscriptionModel {
       'endDate': endDate != null ? Timestamp.fromDate(endDate!) : null,
       'selectedDays': selectedDays,
       'defaultQuantity': defaultQuantity,
+      'unit': unit,
       'subscriptionType': subscriptionType,
     };
   }

@@ -53,7 +53,7 @@ class CustomerActivityTab extends StatelessWidget {
                       color: (entry.isDelivered
                               ? AppColors.success
                               : AppColors.error)
-                          .withValues(alpha: 0.1),
+                          .withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

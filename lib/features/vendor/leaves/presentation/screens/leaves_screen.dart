@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'controller/leave_controller.dart';
 import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
 
 class LeavesScreen extends StatelessWidget {
   LeavesScreen({super.key});
@@ -13,13 +14,13 @@ class LeavesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildLegend(),
+        _buildLegend(context),
         Expanded(
           child: Obx(() {
             if (controller.leaves.isEmpty) {
-              return const Center(
+              return Center(
                   child: Text("No leaves or holidays found.",
-                      style: TextStyle(color: AppColors.textSecondary)));
+                      style: AppStyles.premiumCardBody(context)));
             }
             return ListView.builder(
               physics: const ClampingScrollPhysics(),
@@ -29,26 +30,36 @@ class LeavesScreen extends StatelessWidget {
                 final leave = controller.leaves[index];
                 bool isGlobal = leave.type == 'vendor';
 
-                return Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                return Container(
                   margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.cardShadow,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      )
+                    ],
+                  ),
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: isGlobal
-                          ? Colors.orange.withValues(alpha: 0.1)
-                          : AppColors.primaryLight,
+                          ? Colors.orange.withOpacity(0.1)
+                          : AppColors.indigoPrimary.withOpacity(0.1),
                       child: Icon(
                           isGlobal ? Icons.beach_access : Icons.person_off,
-                          color: isGlobal ? Colors.orange : AppColors.primary),
+                          color: isGlobal ? Colors.orange : AppColors.indigoPrimary),
                     ),
                     title: Text(
                         isGlobal
                             ? "Vendor Holiday"
                             : controller.getCustomerName(leave.targetId),
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                        style: AppStyles.premiumCardTitle(context)),
                     subtitle: Text(
-                        "${DateFormat('MMM d').format(leave.startDate)} - ${DateFormat('MMM d, y').format(leave.endDate)}"),
+                        "${DateFormat('MMM d').format(leave.startDate)} - ${DateFormat('MMM d, y').format(leave.endDate)}",
+                        style: AppStyles.premiumCardBody(context)),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline,
                           color: AppColors.error),
@@ -65,19 +76,18 @@ class LeavesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLegend() {
+  Widget _buildLegend(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.info_outline, size: 16, color: AppColors.textSecondary),
-          SizedBox(width: 8),
+          const Icon(Icons.info_outline, size: 16, color: AppColors.indigoPrimary),
+          const SizedBox(width: 8),
           Expanded(
               child: Text(
                   "Holidays skip deliveries and billing for the selected dates.",
-                  style:
-                      TextStyle(fontSize: 12, color: AppColors.textSecondary))),
+                  style: AppStyles.premiumCardBody(context).copyWith(fontSize: 12))),
         ],
       ),
     );
@@ -92,10 +102,12 @@ class LeavesScreen extends StatelessWidget {
         child: ElevatedButton.icon(
           onPressed: () => _showLeaveDialog(context),
           icon: const Icon(Icons.add, color: Colors.white),
-          label: const Text("Add Holiday / Leave",
-              style: TextStyle(color: Colors.white)),
+          label: Text("Add Holiday / Leave",
+              style: AppStyles.premiumButton(context)),
           style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.indigoPrimary,
+              elevation: 4,
+              shadowColor: AppColors.cardShadow,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12))),
         ),
@@ -121,9 +133,8 @@ class LeavesScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Add Holiday / Leave',
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text('Add Holiday / Leave',
+                    style: AppStyles.dashboardHeading(context)),
                 const SizedBox(height: 16),
                 Obx(() => DropdownButtonFormField<String?>(
                       decoration: const InputDecoration(
@@ -168,15 +179,15 @@ class LeavesScreen extends StatelessWidget {
                   height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.indigoPrimary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12))),
                     onPressed: () {
                       controller.saveLeave();
                       Get.back();
                     },
-                    child: const Text('Save Holiday',
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: Text('Save Holiday',
+                        style: AppStyles.premiumButton(context)),
                   ),
                 ),
                 const SizedBox(height: 24),

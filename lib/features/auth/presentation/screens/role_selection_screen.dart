@@ -31,7 +31,7 @@ class RoleSelectionScreen extends StatelessWidget {
                 height: context.pw(65),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: Colors.white.withOpacity(0.1),
                 ),
               ),
             ),
@@ -43,7 +43,7 @@ class RoleSelectionScreen extends StatelessWidget {
                 height: context.pw(55),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: Colors.white.withOpacity(0.05),
                 ),
               ),
             ),
@@ -74,7 +74,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.15),
+                                      color: Colors.white.withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Row(
@@ -107,7 +107,7 @@ class RoleSelectionScreen extends StatelessWidget {
                               AppStrings.chooseAppUse,
                               style: TextStyle(
                                 fontSize: context.sp(15),
-                                color: Colors.white.withValues(alpha: 0.85),
+                                color: Colors.white.withOpacity(0.85),
                                 height: 1.5,
                               ),
                             ),
@@ -163,7 +163,7 @@ class RoleSelectionScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: Colors.black.withOpacity(0.15),
               blurRadius: 30,
               offset: const Offset(0, 15),
             )
@@ -174,7 +174,7 @@ class RoleSelectionScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(context.pw(4)),
               decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.1),
+                color: accentColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(icon, color: accentColor, size: context.sp(32)),

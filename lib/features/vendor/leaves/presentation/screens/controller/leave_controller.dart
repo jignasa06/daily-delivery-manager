@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:p_v_j/features/vendor/leaves/data/models/leave_model.dart';
-import 'package:p_v_j/features/vendor/leaves/data/services/leave_service.dart';
+import 'package:p_v_j/features/vendor/leaves/domain/repositories/i_leave_repository.dart';
+import 'package:p_v_j/features/vendor/customers/domain/repositories/i_customer_repository.dart';
 import 'package:p_v_j/features/vendor/customers/data/models/customer_model.dart';
-import 'package:p_v_j/features/vendor/customers/data/services/customer_service.dart';
 
 class LeaveController extends GetxController {
-  final LeaveService _leaveService = Get.put(LeaveService());
-  final CustomerService _customerService = Get.find<CustomerService>();
+  final ILeaveRepository _leaveRepository = Get.find<ILeaveRepository>();
+  final ICustomerRepository _customerRepository = Get.find<ICustomerRepository>();
 
   RxList<LeaveModel> leaves = <LeaveModel>[].obs;
   RxList<CustomerModel> customers = <CustomerModel>[].obs;
@@ -20,8 +20,8 @@ class LeaveController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    leaves.bindStream(_leaveService.getLeaves());
-    customers.bindStream(_customerService.getCustomers());
+    leaves.bindStream(_leaveRepository.getVendorLeaves());
+    customers.bindStream(_customerRepository.getCustomers());
   }
 
   void openForm() {
@@ -39,11 +39,11 @@ class LeaveController extends GetxController {
       type: selectedCustomerId.value == null ? 'vendor' : 'customer',
     );
 
-    await _leaveService.addLeave(leave);
+    await _leaveRepository.addVendorLeave(leave);
   }
 
   Future<void> deleteLeave(String id) async {
-    await _leaveService.deleteLeave(id);
+    await _leaveRepository.deleteVendorLeave(id);
   }
 
   String getCustomerName(String customerId) {

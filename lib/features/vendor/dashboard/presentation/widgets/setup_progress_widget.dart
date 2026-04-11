@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:p_v_j/core/constants/app_colors.dart';
-import 'package:p_v_j/core/utils/responsive_helper.dart';
+import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
+import '/core/utils/responsive_helper.dart';
 import '../screens/controller/dashboard_controller.dart';
 
 class SetupProgressWidget extends StatelessWidget {
@@ -22,17 +23,14 @@ class SetupProgressWidget extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.85)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.indigoPrimary.withOpacity(0.1)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: AppColors.cardShadow,
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             )
           ],
         ),
@@ -46,26 +44,21 @@ class SetupProgressWidget extends StatelessWidget {
                     children: [
                       Text(
                         'Setup in Progress',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.sp(14),
-                            fontWeight: FontWeight.bold),
+                        style: AppStyles.dashboardSubheading(context),
                       ),
-                      SizedBox(height: context.ph(0.5)),
+                      const SizedBox(height: 4),
                       Text(
                         nextAction['hint']!,
-                        style: TextStyle(
-                            color: Colors.white70, fontSize: context.sp(11)),
+                        style: AppStyles.premiumCardBody(context).copyWith(fontSize: context.sp(12)),
                       ),
                     ],
                   ),
                 ),
                 Text(
                   '${(progress * 100).toInt()}%',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.sp(16),
-                      fontWeight: FontWeight.bold),
+                  style: AppStyles.dashboardHeading(context).copyWith(
+                      color: AppColors.indigoPrimary,
+                      fontSize: context.sp(18)),
                 ),
               ],
             ),
@@ -74,9 +67,9 @@ class SetupProgressWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
                 value: progress,
-                backgroundColor: Colors.white24,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                minHeight: 6,
+                backgroundColor: AppColors.surfaceCloud,
+                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.indigoPrimary),
+                minHeight: 8,
               ),
             ),
             const SizedBox(height: 12),
@@ -86,21 +79,18 @@ class SetupProgressWidget extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  color: AppColors.indigoPrimary,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(nextAction['icon'] as IconData,
-                        size: context.sp(16), color: AppColors.primary),
-                    SizedBox(width: context.pw(2)),
+                        size: 16, color: Colors.white),
+                    const SizedBox(width: 8),
                     Text(
                       nextAction['action']!,
-                      style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: context.sp(13),
-                          fontWeight: FontWeight.bold),
+                      style: AppStyles.premiumButton(context),
                     ),
                   ],
                 ),
@@ -115,8 +105,8 @@ class SetupProgressWidget extends StatelessWidget {
   int _getCompletedSteps(DashboardController controller) {
     int count = 0;
     if (controller.totalProducts.value > 0) count++;
-    if (controller.totalCustomers.value > 0) count++;
-    if (controller.totalSubscriptions.value > 0) count++;
+    if (controller.totalCustomers > 0) count++;
+    if (controller.totalSubscriptions > 0) count++;
     return count;
   }
 
@@ -128,7 +118,7 @@ class SetupProgressWidget extends StatelessWidget {
         'icon': Icons.inventory_2_outlined,
         'onTap': () => controller.changePage(0),
       };
-    } else if (controller.totalCustomers.value == 0) {
+    } else if (controller.totalCustomers == 0) {
       return {
         'hint': 'Great! Now register your customers.',
         'action': 'Create First Customer',

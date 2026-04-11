@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'controller/customer_controller.dart';
 import '/core/constants/app_colors.dart';
+import '/core/constants/app_styles.dart';
 import '/core/widgets/common_text_field.dart';
 
 class CustomersScreen extends StatelessWidget {
@@ -25,14 +26,11 @@ class CustomersScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.people_outline,
                           size: 80,
-                          color: AppColors.primary.withValues(alpha: 0.2)),
+                          color: AppColors.indigoPrimary.withOpacity(0.1)),
                       const SizedBox(height: 24),
-                      const Text(
+                      Text(
                         "No Customers Yet",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textMain),
+                        style: AppStyles.dashboardHeading(context),
                       ),
                       const SizedBox(height: 8),
                       const Text(
@@ -44,17 +42,15 @@ class CustomersScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () => _showCustomerDialog(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.indigoPrimary,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 14),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),
                         icon: const Icon(Icons.person_add, color: Colors.white),
-                        label: const Text("Add My First Customer",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        label: Text("Add My First Customer",
+                            style: AppStyles.premiumButton(context)),
                       ),
                     ],
                   ),
@@ -69,19 +65,27 @@ class CustomersScreen extends StatelessWidget {
                   itemCount: controller.customers.length,
                   itemBuilder: (context, index) {
                     final customer = controller.customers[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                    return Container(
                       margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.cardShadow,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
                       child: ListTile(
-                        leading: const CircleAvatar(
-                            backgroundColor: AppColors.primaryLight,
+                        leading: CircleAvatar(
+                            backgroundColor: AppColors.indigoPrimary.withOpacity(0.1),
                             child:
-                                Icon(Icons.person, color: AppColors.primary)),
+                                const Icon(Icons.person, color: AppColors.indigoPrimary)),
                         title: Text(customer.name,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(customer.phone),
+                            style: AppStyles.premiumCardTitle(context)),
+                        subtitle: Text(customer.phone, style: AppStyles.premiumCardBody(context)),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete_outline,
                               color: AppColors.error),
@@ -97,7 +101,8 @@ class CustomersScreen extends StatelessWidget {
                   bottom: 16,
                   right: 16,
                   child: FloatingActionButton(
-                    backgroundColor: AppColors.primary,
+                    heroTag: 'add_customer_fab',
+                    backgroundColor: AppColors.indigoPrimary,
                     onPressed: () => _showCustomerDialog(context),
                     child: const Icon(Icons.person_add, color: Colors.white),
                   ),
@@ -174,12 +179,12 @@ class CustomersScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.indigoPrimary,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12))),
                       onPressed: controller.saveCustomer,
-                      child: const Text('Save',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                      child: Text('Save',
+                          style: AppStyles.premiumButton(context)),
                     ),
                   ),
                   const SizedBox(height: 24),
